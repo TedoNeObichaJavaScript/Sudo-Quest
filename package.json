@@ -1,0 +1,35 @@
+{
+  "name": "terminalquest",
+  "version": "1.0.0",
+  "description": "sudo solve - A coding game for learning terminal and programming",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server/index.js",
+    "start": "node server/index.js"
+  },
+  "keywords": [
+    "coding",
+    "game",
+    "education",
+    "javascript",
+    "terminal",
+    "learning",
+    "web-app",
+    "coding-challenge"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/sudo-solve.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/sudo-solve/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/sudo-solve#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {}
+}
