@@ -197,7 +197,7 @@ export const CSHARP_LEVELS = [
     question:'Transform with LINQ: var doubled = numbers.Select(n => n * 2);',
     hints:['.Select() transforms each element','Like .map() in JavaScript','var doubled = numbers.Select(n => n * 2);'],
     validate: vHas(['.Select(','=> ']),
-    successMessage:'.Select() is C#\'s map. Chain LINQ: numbers.Where(n > 0).Select(n * 2).ToList().' },
+    successMessage:'.Select() is C#\'s map. Chain LINQ: numbers.Where(n => n > 0).Select(n => n * 2).ToList().' },
 
   { id:5034, title:'Async Method', category:'C#', type:'csharp',
     question:'Declare an async method: async Task<string> FetchData() { return await GetDataAsync(); }',

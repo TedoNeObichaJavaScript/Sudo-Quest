@@ -7,8 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="#-features"><img src="https://img.shields.io/badge/levels-30-00ff41?style=for-the-badge&labelColor=0d1117" alt="30 Levels"></a>
-  <a href="#-categories"><img src="https://img.shields.io/badge/categories-7-00ff41?style=for-the-badge&labelColor=0d1117" alt="7 Categories"></a>
+  <a href="#-features"><img src="https://img.shields.io/badge/levels-210-00ff41?style=for-the-badge&labelColor=0d1117" alt="210 Levels"></a>
+  <a href="#-categories"><img src="https://img.shields.io/badge/categories-6-00ff41?style=for-the-badge&labelColor=0d1117" alt="6 Categories"></a>
   <a href="#-getting-started"><img src="https://img.shields.io/badge/framework-none-00ff41?style=for-the-badge&labelColor=0d1117" alt="No Framework"></a>
   <img src="https://img.shields.io/badge/license-MIT-00ff41?style=for-the-badge&labelColor=0d1117" alt="MIT License">
 </p>
@@ -23,22 +23,22 @@
 
 ## What is sudo solve?
 
-**sudo solve** is an interactive browser-based coding game that teaches programming through a terminal interface. Type real code, get instant feedback, and progress through 30 levels covering JavaScript fundamentals and Git basics.
+**sudo solve** is an interactive browser-based coding game that teaches programming through a terminal interface. Type real code, get instant feedback, and progress through 210 levels covering JavaScript, HTML, CSS, Git, Terminal commands, and C#.
 
 No accounts. No installs. No setup. Just open and start typing.
 
 ```
- ╔══════════════════════════════════════════════════════╗
- ║  user@sudoquest:~$                                  ║
- ║                                                     ║
- ║  Level 1: Hello, World!                             ║
- ║  Use console.log() to print "Hello, World!"         ║
- ║                                                     ║
- ║  $ console.log("Hello, World!")                     ║
- ║                                                     ║
- ║  ✓ PASSED — You just printed your first message!    ║
- ║                                                     ║
- ╚══════════════════════════════════════════════════════╝
+ +======================================================+
+ |  user@sudoquest:~$                                   |
+ |                                                      |
+ |  Level 1: Hello, World!                              |
+ |  Use console.log() to print "Hello, World!"          |
+ |                                                      |
+ |  $ console.log("Hello, World!")                      |
+ |                                                      |
+ |  > PASSED -- You just printed your first message!    |
+ |                                                      |
+ +======================================================+
 ```
 
 ---
@@ -46,12 +46,16 @@ No accounts. No installs. No setup. Just open and start typing.
 ## Features
 
 - **Real Code Execution** — JavaScript runs in a sandboxed Web Worker. No simulation, no faking it
-- **Git Simulation** — Levels 28-30 simulate a real Git environment with init, commit, and branching
+- **Git & Terminal Simulation** — Simulated environments with persistent state for Git and shell commands
+- **6 Categories** — JavaScript, HTML, CSS, Git, Terminal, and C# — 35 levels each
+- **Category Selection** — Pick any category from the selection screen and learn at your own pace
 - **3-Tier Hint System** — Stuck? Reveal hints progressively — from concept to syntax to full answer
+- **Session Timer** — Track your total time and per-level splits as you play
+- **8 Themes** — Green (default), amber, cyan, purple, red, pink, blue, and white — saved to localStorage
 - **Progress Persistence** — Your progress saves to `localStorage`. Close the tab, come back later
-- **Terminal UI** — Authentic dark terminal aesthetic with JetBrains Mono, green-on-black, and a blinking cursor
-- **Keyboard-First** — Type commands and press Enter. Arrow keys for command history. `Ctrl+L` to clear
-- **Zero Dependencies** — Pure HTML, CSS, and vanilla JavaScript on the frontend. Just Express for serving
+- **Terminal UI** — Authentic dark terminal aesthetic with system monospace fonts and a blinking cursor
+- **Keyboard-First** — Type commands and press Enter. Shift+Enter for multi-line. Arrow keys for history
+- **Zero Dependencies** — Pure HTML, CSS, and vanilla JS on the frontend. Just Express for serving
 
 ---
 
@@ -59,14 +63,12 @@ No accounts. No installs. No setup. Just open and start typing.
 
 | # | Category | Levels | What You'll Learn |
 |---|----------|--------|-------------------|
-| 1 | **Basics** | 1–5 | `console.log`, variables, numbers, math, string concatenation |
-| 2 | **Conditions** | 6–9 | `if/else`, strict equality `===`, logical operators `&&` |
-| 3 | **Loops** | 10–13 | `for`, `while`, countdown, `for...of` |
-| 4 | **Arrays** | 14–17 | Create, access, `.push()`, `.length` |
-| 5 | **Objects** | 18–20 | Create, dot notation, nested objects |
-| 6 | **Functions** | 21–24 | Declaration, `return`, arrow functions, callbacks |
-| 7 | **Advanced** | 25–27 | `.map()`, `.filter()`, ternary operator |
-| 8 | **Git** | 28–30 | `git init`, staging & committing, branching |
+| 1 | **JavaScript** | 35 | Variables, types, control flow, loops, arrays, objects, functions, arrow functions, destructuring, spread, classes, closures |
+| 2 | **Git** | 35 | init, add, commit, status, log, branching, checkout, switch, stash, merge, feature branch workflows |
+| 3 | **Terminal** | 35 | pwd, ls, cd, mkdir, touch, echo, cat, cp, mv, rm, pipes, grep, sort, head, tail, environment variables |
+| 4 | **HTML** | 35 | Boilerplate, headings, links, images, lists, forms, inputs, tables, semantic elements, meta tags, data attributes |
+| 5 | **CSS** | 35 | Selectors, box model, flexbox, grid, positioning, transitions, hover states, media queries, CSS variables, pseudo-elements |
+| 6 | **C#** | 35 | Types, variables, control flow, arrays, lists, methods, classes, inheritance, interfaces, LINQ, async/await, enums |
 
 ---
 
@@ -92,12 +94,6 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) and start solving.
 
-### Development
-
-```bash
-npm run dev
-```
-
 ---
 
 ## Project Structure
@@ -105,16 +101,24 @@ npm run dev
 ```
 sudo-solve/
 ├── public/
-│   ├── index.html              # Single page app shell
+│   ├── index.html                  # Single page app shell
 │   ├── css/
-│   │   └── styles.css          # Terminal theme (pure CSS)
+│   │   └── styles.css              # Terminal theme (pure CSS, 8 themes)
 │   ├── js/
-│   │   ├── app.js              # Game engine (SudoQuest class)
-│   │   └── levels.js           # 30 level definitions + validators
+│   │   ├── app.js                  # Game engine (SudoQuest class)
+│   │   ├── levels.js               # Level orchestrator, imports all categories
+│   │   └── levels/                 # Per-category level definitions
+│   │       ├── helpers.js          # Shared validation helpers
+│   │       ├── js.js               # JavaScript levels (35)
+│   │       ├── git.js              # Git levels (35)
+│   │       ├── cmd.js              # Terminal levels (35)
+│   │       ├── html.js             # HTML levels (35)
+│   │       ├── css.js              # CSS levels (35)
+│   │       └── csharp.js           # C# levels (35)
 │   └── workers/
-│       └── sandbox-worker.js   # Web Worker for safe code execution
+│       └── sandbox-worker.js       # Web Worker for safe code execution
 ├── server/
-│   └── index.js                # Express static server
+│   └── index.js                    # Express static server
 ├── package.json
 └── LICENSE
 ```
@@ -125,19 +129,20 @@ sudo-solve/
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
-│  User types  │────▶│  Game Engine  │────▶│  Sandbox Worker │
+│  User types  │────>│  Game Engine  │────>│  Sandbox Worker │
 │  code in     │     │  (app.js)    │     │  (Web Worker)   │
 │  terminal    │     │              │     │                 │
-│              │◀────│  Validates   │◀────│  Executes code  │
+│              │<────│  Validates   │<────│  Executes code  │
 │  Gets result │     │  output      │     │  safely         │
 └─────────────┘     └──────────────┘     └─────────────────┘
 ```
 
 1. **User input** is captured from the terminal-styled input field
 2. **JavaScript levels** send code to a Web Worker sandbox that executes it safely and returns variables, console output, and errors
-3. **Git levels** process commands through a simulated Git state machine
-4. **Validation functions** (defined per-level) check if the output matches expected results
-5. **Progress** is saved to `localStorage` after each completed level
+3. **Git & Terminal levels** process commands through simulated state machines with persistent state
+4. **HTML, CSS, and C# levels** validate code as text against expected patterns
+5. **Validation functions** (defined per-level) check if the output matches expected results
+6. **Progress** is saved to `localStorage` after each completed level
 
 ---
 
@@ -148,10 +153,11 @@ sudo-solve/
 | `help` | Show available commands |
 | `hint` | Reveal the next hint (3 per level) |
 | `skip` | Skip to the next level |
-| `reset` | Restart the current level |
-| `levels` | View all levels and progress |
+| `reset` | Reset the current level |
+| `categories` | Return to category selection |
+| `theme` | Cycle through 8 terminal themes |
 | `clear` | Clear the terminal screen |
-| `Ctrl+L` | Clear terminal (keyboard shortcut) |
+| `Shift+Enter` | New line in input |
 | `↑` / `↓` | Navigate command history |
 
 ---
@@ -160,8 +166,8 @@ sudo-solve/
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Vanilla JS, CSS, HTML |
-| Font | JetBrains Mono |
+| Frontend | Vanilla JS (ES modules), CSS, HTML |
+| Fonts | System monospace stack |
 | Code Execution | Web Workers (sandboxed) |
 | Server | Express.js |
 | Storage | localStorage |
