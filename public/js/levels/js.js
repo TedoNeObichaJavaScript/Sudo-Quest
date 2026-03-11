@@ -180,4 +180,34 @@ export const JS_LEVELS = [
     hints:['Ternary: condition ? ifTrue : ifFalse','let variable = condition ? val1 : val2','let score = 75; let status = score > 50 ? "pass" : "fail"'],
     validate:(c,r)=>{ if(r.errors?.length)return F(r.errors[0]); if(!codeHas(c,'?'))return F('Use the ternary operator (?).'); return hasVar(r,'status','pass')?P:F('score is 75 (>50), so status should be "pass".'); },
     successMessage:'Ternaries are one-line if-else for assignments. Keep them simple — for complex logic, use full if-else.' },
+
+  { id:31, title:'Destructuring Object', category:'JavaScript', type:'js',
+    question:'Create obj = { x: 10, y: 20 }. Use destructuring: const { x, y } = obj; Log x.',
+    hints:['Destructuring extracts values: const { key } = obj','const { x, y } = obj; pulls out x and y','const obj = { x: 10, y: 20 }; const { x, y } = obj; console.log(x)'],
+    validate:(c,r)=>{ if(r.errors?.length)return F(r.errors[0]); if(!codeHas(c,'{'))return F('Use destructuring syntax { }.'); return hasOutput(r,'10')?P:F('Log x — it should be 10.'); },
+    successMessage:'Destructuring unpacks values from objects/arrays. Rename: const { x: posX } = obj. Default: const { z = 0 } = obj.' },
+
+  { id:32, title:'Destructuring Array', category:'JavaScript', type:'js',
+    question:'Create arr = [1, 2, 3]. Destructure: const [a, b, c] = arr; Log b.',
+    hints:['Array destructuring uses [ ] brackets','const [first, second] = array','const arr = [1, 2, 3]; const [a, b, c] = arr; console.log(b)'],
+    validate:(c,r)=>{ if(r.errors?.length)return F(r.errors[0]); if(!codeHas(c,'['))return F('Use array destructuring [a, b, c].'); return hasOutput(r,'2')?P:F('Log b — it should be 2.'); },
+    successMessage:'Array destructuring by position. Skip with commas: const [, second] = arr. Use with swap: [a, b] = [b, a].' },
+
+  { id:33, title:'Spread Operator', category:'JavaScript', type:'js',
+    question:'Create arr1 = [1, 2]. Use spread to make arr2 = [...arr1, 3, 4].',
+    hints:['... (three dots) spreads an array into another','let arr2 = [...arr1, newItems]','let arr1 = [1, 2]; let arr2 = [...arr1, 3, 4]'],
+    validate:(c,r)=>{ if(r.errors?.length)return F(r.errors[0]); if(!codeHas(c,'...'))return F('Use the spread operator ...'); const a=r.variables.arr2; return(Array.isArray(a)&&a.length===4&&a[0]===1&&a[3]===4)?P:F('arr2 should be [1, 2, 3, 4].'); },
+    successMessage:'Spread copies arrays/objects shallowly. Merge objects: { ...obj1, ...obj2 }. Great for immutable updates.' },
+
+  { id:34, title:'Class', category:'JavaScript', type:'js',
+    question:'Create a class Animal with constructor(name) that sets this.name. Create let pet = new Animal("Rex"). Log pet.name.',
+    hints:['class Name { constructor(params) { this.prop = params } }','new creates an instance','class Animal { constructor(name) { this.name = name } } let pet = new Animal("Rex"); console.log(pet.name)'],
+    validate:(c,r)=>{ if(r.errors?.length)return F(r.errors[0]); if(!codeHas(c,'class'))return F('Use the class keyword.'); return hasOutput(r,'Rex')?P:F('Log pet.name — should output "Rex".'); },
+    successMessage:'Classes are blueprints for objects. Supports extends for inheritance, get/set for computed properties, and static methods.' },
+
+  { id:35, title:'Closure', category:'JavaScript', type:'js',
+    question:'Create a function makeCounter() that returns a function. The inner function should increment and return a counter. Log makeCounter()().',
+    hints:['A closure remembers variables from its outer scope','function makeCounter() { let n = 0; return function() { n++; return n } }','function makeCounter() { let n = 0; return function() { n++; return n } } console.log(makeCounter()())'],
+    validate:(c,r)=>{ if(r.errors?.length)return F(r.errors[0]); if(!codeHas(c,'return'))return F('The outer function should return the inner function.'); return hasOutput(r,'1')?P:F('First call should output 1.'); },
+    successMessage:'Closures let inner functions access outer variables even after the outer function returns. Foundation of modules, callbacks, and React hooks.' },
 ];

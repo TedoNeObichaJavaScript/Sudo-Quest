@@ -3,15 +3,13 @@
    Pure CSS, no framework dependencies
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
-
 /* ── Variables ───────────────────────────────────────────────── */
 
 :root {
-  --green: #00ff41;
-  --green-dim: rgba(0, 255, 65, 0.6);
-  --green-faint: rgba(0, 255, 65, 0.15);
-  --green-glow: rgba(0, 255, 65, 0.4);
+  --accent: #00ff41;
+  --accent-dim: rgba(0, 255, 65, 0.6);
+  --accent-faint: rgba(0, 255, 65, 0.15);
+  --accent-glow: rgba(0, 255, 65, 0.4);
   --bg-dark: #0a0a0f;
   --bg-terminal: #0d1117;
   --bg-input: #111820;
@@ -20,7 +18,58 @@
   --yellow: #ffcc00;
   --white: #e0e0e0;
   --dim: rgba(255, 255, 255, 0.35);
-  --font: 'JetBrains Mono', 'Courier New', monospace;
+  --font: 'Cascadia Code', 'Fira Code', 'Consolas', 'Courier New', monospace;
+}
+
+/* ── Themes (applied via [data-theme] on <html>) ────────────── */
+
+[data-theme="amber"] {
+  --accent: #ffb000;
+  --accent-dim: rgba(255, 176, 0, 0.6);
+  --accent-faint: rgba(255, 176, 0, 0.15);
+  --accent-glow: rgba(255, 176, 0, 0.4);
+}
+
+[data-theme="cyan"] {
+  --accent: #00e5ff;
+  --accent-dim: rgba(0, 229, 255, 0.6);
+  --accent-faint: rgba(0, 229, 255, 0.15);
+  --accent-glow: rgba(0, 229, 255, 0.4);
+}
+
+[data-theme="purple"] {
+  --accent: #bf5af2;
+  --accent-dim: rgba(191, 90, 242, 0.6);
+  --accent-faint: rgba(191, 90, 242, 0.15);
+  --accent-glow: rgba(191, 90, 242, 0.4);
+}
+
+[data-theme="red"] {
+  --accent: #ff453a;
+  --accent-dim: rgba(255, 69, 58, 0.6);
+  --accent-faint: rgba(255, 69, 58, 0.15);
+  --accent-glow: rgba(255, 69, 58, 0.4);
+}
+
+[data-theme="pink"] {
+  --accent: #ff375f;
+  --accent-dim: rgba(255, 55, 95, 0.6);
+  --accent-faint: rgba(255, 55, 95, 0.15);
+  --accent-glow: rgba(255, 55, 95, 0.4);
+}
+
+[data-theme="blue"] {
+  --accent: #0a84ff;
+  --accent-dim: rgba(10, 132, 255, 0.6);
+  --accent-faint: rgba(10, 132, 255, 0.15);
+  --accent-glow: rgba(10, 132, 255, 0.4);
+}
+
+[data-theme="white"] {
+  --accent: #ffffff;
+  --accent-dim: rgba(255, 255, 255, 0.6);
+  --accent-faint: rgba(255, 255, 255, 0.15);
+  --accent-glow: rgba(255, 255, 255, 0.4);
 }
 
 /* ── Reset & Base ────────────────────────────────────────────── */
@@ -35,7 +84,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   background: var(--bg-dark);
-  color: var(--green);
+  color: var(--accent);
   font-family: var(--font);
   font-size: 14px;
   line-height: 1.6;
@@ -43,8 +92,8 @@ html, body {
 }
 
 ::selection {
-  background: var(--green-faint);
-  color: var(--green);
+  background: var(--accent-faint);
+  color: var(--accent);
 }
 
 /* ── App Layout ──────────────────────────────────────────────── */
@@ -107,8 +156,8 @@ html, body {
 .timer-title {
   font-size: 13px;
   font-weight: 700;
-  color: var(--green);
-  text-shadow: 0 0 8px var(--green-glow);
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
   letter-spacing: -0.3px;
 }
 
@@ -152,7 +201,7 @@ html, body {
 }
 
 .split-icon.completed {
-  color: var(--green);
+  color: var(--accent);
 }
 
 .split-icon.active {
@@ -173,7 +222,7 @@ html, body {
 }
 
 .split-row.active .split-name {
-  color: var(--green);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -189,7 +238,7 @@ html, body {
 }
 
 .split-time.completed {
-  color: var(--green-dim);
+  color: var(--accent-dim);
 }
 
 .split-time.gold {
@@ -214,8 +263,8 @@ html, body {
 .timer-clock {
   font-size: 32px;
   font-weight: 700;
-  color: var(--green);
-  text-shadow: 0 0 12px var(--green-glow), 0 0 24px rgba(0, 255, 65, 0.15);
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--accent-glow), 0 0 24px rgba(0, 255, 65, 0.15);
   font-variant-numeric: tabular-nums;
   letter-spacing: -1px;
   line-height: 1;
@@ -234,7 +283,7 @@ html, body {
 }
 
 .segment-time {
-  color: var(--green-dim);
+  color: var(--accent-dim);
   font-variant-numeric: tabular-nums;
 }
 
@@ -260,8 +309,8 @@ html, body {
 .logo {
   font-size: 18px;
   font-weight: 700;
-  color: var(--green);
-  text-shadow: 0 0 10px var(--green-glow), 0 0 20px rgba(0, 255, 65, 0.2);
+  color: var(--accent);
+  text-shadow: 0 0 10px var(--accent-glow), 0 0 20px rgba(0, 255, 65, 0.2);
   letter-spacing: -0.5px;
 }
 
@@ -285,8 +334,8 @@ html, body {
   padding: 3px 10px;
   border: 1px solid var(--border);
   border-radius: 12px;
-  color: var(--green-dim);
-  background: var(--green-faint);
+  color: var(--accent-dim);
+  background: var(--accent-faint);
 }
 
 .header-right {
@@ -297,7 +346,7 @@ html, body {
 
 .level-text {
   font-size: 12px;
-  color: var(--green-dim);
+  color: var(--accent-dim);
   white-space: nowrap;
 }
 
@@ -317,10 +366,67 @@ html, body {
 
 .progress-fill {
   height: 100%;
-  background: var(--green);
+  background: var(--accent);
   border-radius: 3px;
-  transition: width 0.5s ease;
-  box-shadow: 0 0 6px var(--green-glow);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+/* ── Action Toolbar ─────────────────────────────────────────── */
+
+.action-toolbar {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  width: 56px;
+  flex-shrink: 0;
+  background: #08080c;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+@media (min-width: 768px) {
+  .action-toolbar {
+    display: flex;
+  }
+}
+
+.toolbar-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--dim);
+  font-family: var(--font);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.toolbar-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-faint);
+  background: var(--accent-faint);
+}
+
+.toolbar-btn:active {
+  transform: scale(0.93);
+}
+
+.toolbar-icon {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.toolbar-label {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* ── Terminal ────────────────────────────────────────────────── */
@@ -335,9 +441,17 @@ html, body {
   overflow: hidden;
 }
 
+@media (min-width: 768px) {
+  .terminal {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+  }
+}
+
 @media (min-width: 900px) {
   .terminal {
-    border-radius: 0 8px 8px 0;
+    border-radius: 0;
+    border-right: none;
   }
 }
 
@@ -377,7 +491,6 @@ html, body {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-  scroll-behavior: smooth;
 }
 
 .terminal-output .line {
@@ -394,17 +507,17 @@ html, body {
 }
 
 /* Line types */
-.line-default { color: var(--green); }
-.line-command { color: var(--green); opacity: 0.9; }
+.line-default { color: var(--accent); }
+.line-command { color: var(--accent); opacity: 0.9; }
 .line-output { color: var(--white); }
 .line-error { color: var(--red); }
 .line-hint { color: var(--yellow); }
-.line-success { color: var(--green); font-weight: 600; }
-.line-success-message { color: var(--green-dim); font-style: italic; }
-.line-question { color: var(--green); font-weight: 600; font-size: 14px; }
+.line-success { color: var(--accent); font-weight: 600; }
+.line-success-message { color: var(--accent-dim); font-style: italic; }
+.line-question { color: var(--accent); font-weight: 600; font-size: 14px; }
 .line-dim { color: var(--dim); }
-.line-system { color: var(--green-dim); }
-.line-level-header { color: var(--green); opacity: 0.7; }
+.line-system { color: var(--accent-dim); }
+.line-level-header { color: var(--accent); opacity: 0.7; }
 
 @media (min-width: 640px) {
   .line-question { font-size: 15px; }
@@ -414,8 +527,8 @@ html, body {
 .ascii-art {
   font-size: 10px;
   line-height: 1.2;
-  color: var(--green);
-  text-shadow: 0 0 8px var(--green-glow);
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
   margin: 0;
   font-family: var(--font);
 }
@@ -429,7 +542,7 @@ html, body {
 .completion-art {
   font-size: 12px;
   line-height: 1.3;
-  color: var(--green);
+  color: var(--accent);
   margin: 0;
   font-family: var(--font);
 }
@@ -447,7 +560,7 @@ html, body {
 }
 
 .prompt {
-  color: var(--green);
+  color: var(--accent);
   font-weight: 700;
   font-size: 16px;
   flex-shrink: 0;
@@ -459,10 +572,10 @@ html, body {
   background: transparent;
   border: none;
   outline: none;
-  color: var(--green);
+  color: var(--accent);
   font-family: var(--font);
   font-size: 14px;
-  caret-color: var(--green);
+  caret-color: var(--accent);
   min-width: 0;
   resize: none;
   line-height: 1.4;
@@ -478,9 +591,9 @@ html, body {
 
 .run-btn {
   padding: 6px 16px;
-  background: var(--green-faint);
+  background: var(--accent-faint);
   border: 1px solid rgba(0, 255, 65, 0.3);
-  color: var(--green);
+  color: var(--accent);
   font-family: var(--font);
   font-size: 12px;
   font-weight: 700;
@@ -493,8 +606,8 @@ html, body {
 
 .run-btn:hover {
   background: rgba(0, 255, 65, 0.25);
-  border-color: var(--green);
-  box-shadow: 0 0 8px var(--green-glow);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .run-btn:active {
@@ -520,7 +633,7 @@ html, body {
 }
 
 .footer strong {
-  color: var(--green-dim);
+  color: var(--accent-dim);
   font-weight: 600;
 }
 
@@ -540,7 +653,7 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--green-dim);
+  background: var(--accent-dim);
 }
 
 /* Firefox */
@@ -560,44 +673,14 @@ html, body {
   box-shadow: 0 0 12px rgba(0, 255, 65, 0.05);
 }
 
-/* ── CRT Scanline Effect (subtle) ────────────────────────────── */
-
-.terminal::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    transparent 50%,
-    rgba(0, 255, 65, 0.015) 50%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 8px;
-}
-
 .terminal {
   position: relative;
 }
 
-.terminal-output,
-.terminal-input-area {
-  position: relative;
-  z-index: 2;
-}
-
 /* ── Animations ──────────────────────────────────────────────── */
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.line {
-  animation: fadeIn 0.15s ease;
+@media (prefers-reduced-motion: no-preference) {
+  .progress-fill { transition: width 0.5s ease; }
 }
 
 /* ── Mobile Adjustments ──────────────────────────────────────── */

@@ -4,6 +4,17 @@
 
 import { CATEGORIES, getCategoryByKey, getLevelsForCategory } from './levels.js';
 
+const THEMES = {
+  green:  { name: 'Matrix Green',  key: 'green' },
+  amber:  { name: 'Amber CRT',    key: 'amber' },
+  cyan:   { name: 'Cyan Neon',    key: 'cyan' },
+  purple: { name: 'Purple Haze',  key: 'purple' },
+  red:    { name: 'Red Alert',    key: 'red' },
+  pink:   { name: 'Hot Pink',     key: 'pink' },
+  blue:   { name: 'Ocean Blue',   key: 'blue' },
+  white:  { name: 'Monochrome',   key: 'white' },
+};
+
 class SudoQuest {
   constructor() {
     // Game state
@@ -45,6 +56,7 @@ class SudoQuest {
     this.timerClock = document.getElementById('timer-clock');
     this.segmentTime = document.getElementById('segment-time');
     this.splitsList = document.getElementById('splits-list');
+    this.toolbar = document.getElementById('action-toolbar');
 
     if (!this.input || !this.output) {
       console.error('Required DOM elements not found');
@@ -57,6 +69,7 @@ class SudoQuest {
   // ── Initialization ──────────────────────────────────────────
 
   init() {
+    this.loadTheme();
     this.loadProgress();
     this.setupEventListeners();
     this.setupTimerDisplay();
@@ -97,6 +110,18 @@ class SudoQuest {
     });
 
     this.output.addEventListener('click', () => this.input.focus());
+
+    if (this.toolbar) {
+      this.toolbar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.toolbar-btn');
+        if (!btn) return;
+        const cmd = btn.dataset.cmd;
+        if (cmd && !this.isExecuting) {
+          this.addLine(`$ ${cmd}`, 'command');
+          this.handleSpecialCommand(cmd);
+        }
+      });
+    }
 
     document.addEventListener('keydown', (e) => {
       if (e.ctrlKey && e.key === 'l') {
@@ -388,6 +413,10 @@ class SudoQuest {
       const num = parseInt(cmd.split(' ')[1]);
       if (!isNaN(num)) { this.jumpToLevel(num); return true; }
     }
+    if (cmd === 'theme' || cmd.startsWith('theme ')) {
+      this.handleThemeCommand(cmd.slice(5).trim());
+      return true;
+    }
     return false;
   }
 
@@ -407,6 +436,7 @@ class SudoQuest {
       ['categories', 'Pick a new category'],
       ['level N',    'Jump to level N'],
       ['skip',       'Skip to next level'],
+      ['theme',      'Change color theme'],
       ['help',       'Show this help'],
     ];
     cmds.forEach(([c, d]) => {
@@ -415,6 +445,45 @@ class SudoQuest {
     this.addLine('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D', 'system');
     this.addLine('Shift+Enter for multi-line input.', 'dim');
     this.addBlank();
+  }
+
+  // ── Theme System ────────────────────────────────────────────
+
+  loadTheme() {
+    try {
+      const saved = localStorage.getItem('sudoquest_theme');
+      if (saved && THEMES[saved]) this.applyTheme(saved);
+    } catch (_) {}
+  }
+
+  applyTheme(key) {
+    if (key === 'green') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', key);
+    }
+    try { localStorage.setItem('sudoquest_theme', key); } catch (_) {}
+  }
+
+  handleThemeCommand(args) {
+    const name = args.trim().toLowerCase();
+    if (!name) {
+      this.addBlank();
+      this.addLine('Available themes:', 'system');
+      Object.values(THEMES).forEach(t => {
+        this.addLine(`  ${t.key.padEnd(10)} — ${t.name}`, 'system');
+      });
+      this.addBlank();
+      this.addLine('Usage: theme <name>  (e.g. "theme cyan")', 'dim');
+      this.addBlank();
+      return;
+    }
+    if (THEMES[name]) {
+      this.applyTheme(name);
+      this.addLine(`Theme set to ${THEMES[name].name}.`, 'success');
+    } else {
+      this.addLine(`Unknown theme "${name}". Type "theme" to see options.`, 'error');
+    }
   }
 
   revealHint() {
@@ -855,6 +924,7 @@ class SudoQuest {
     return {
       initialized: false, HEAD: null, currentBranch: null,
       branches: {}, commits: [], index: {}, workingDirectory: {},
+      stash: [], merged: [],
       _fileCreated: false, _fileStaged: false, _committed: false
     };
   }
@@ -898,6 +968,9 @@ class SudoQuest {
       case 'commit': return this.gitCommit(args);
       case 'branch': return this.gitBranch(args);
       case 'checkout': return this.gitCheckout(args);
+      case 'switch': return this.gitSwitch(args);
+      case 'merge': return this.gitMerge(args);
+      case 'stash': return this.gitStash(args);
       case 'status': return this.gitStatus();
       case 'log': return this.gitLog();
       default: return { error: `Unknown git command: ${gitCmd}` };
@@ -989,6 +1062,70 @@ class SudoQuest {
     return { message: `Switched to branch '${args[0]}'` };
   }
 
+  gitSwitch(args) {
+    if (!this.gitState.initialized) return { error: 'Not a git repository.' };
+    if (!args[0]) return { error: 'Branch name required.' };
+    if (args[0] === '-c') {
+      const name = args[1];
+      if (!name) return { error: 'Branch name required after -c.' };
+      if (!this.gitState.commits.length) return { error: 'Cannot create branch: no commits yet.' };
+      const r = this.gitBranch([name]);
+      if (r.error) return r;
+      this.gitState.HEAD = `refs/heads/${name}`;
+      this.gitState.currentBranch = name;
+      return { message: `Switched to a new branch '${name}'` };
+    }
+    if (!this.gitState.branches[args[0]]) return { error: `error: pathspec '${args[0]}' did not match any branch.` };
+    this.gitState.HEAD = `refs/heads/${args[0]}`;
+    this.gitState.currentBranch = args[0];
+    return { message: `Switched to branch '${args[0]}'` };
+  }
+
+  gitMerge(args) {
+    if (!this.gitState.initialized) return { error: 'Not a git repository.' };
+    const source = args[0];
+    if (!source) return { error: 'Branch name required. Usage: git merge <branch>' };
+    if (!this.gitState.branches[source]) return { error: `merge: ${source} - not something we can merge.` };
+    if (source === this.gitState.currentBranch) return { error: 'Cannot merge a branch into itself.' };
+    const hash = Math.random().toString(36).substring(2, 9);
+    const branch = this.gitState.currentBranch;
+    this.gitState.commits.unshift({
+      hash, message: `Merge branch '${source}' into ${branch}`,
+      files: [], timestamp: Date.now(),
+      parent: this.gitState.branches[branch]?.commit || null
+    });
+    this.gitState.branches[branch].commit = hash;
+    this.gitState.branches[branch].commits.push(hash);
+    this.gitState.merged.push(source);
+    return { message: `Merge made by the 'ort' strategy.\nMerged '${source}' into '${branch}'.` };
+  }
+
+  gitStash(args) {
+    if (!this.gitState.initialized) return { error: 'Not a git repository.' };
+    const sub = args[0] || 'push';
+    if (sub === 'push' || sub === undefined) {
+      const files = { ...this.gitState.workingDirectory };
+      const staged = { ...this.gitState.index };
+      if (!Object.keys(files).length && !Object.keys(staged).length) return { error: 'No local changes to save.' };
+      this.gitState.stash.push({ files, staged });
+      this.gitState.workingDirectory = {};
+      this.gitState.index = {};
+      return { message: `Saved working directory and index state WIP on ${this.gitState.currentBranch}` };
+    }
+    if (sub === 'pop') {
+      if (!this.gitState.stash.length) return { error: 'No stash entries found.' };
+      const entry = this.gitState.stash.pop();
+      Object.assign(this.gitState.workingDirectory, entry.files);
+      Object.assign(this.gitState.index, entry.staged);
+      return { message: 'Dropped refs/stash@{0}. Applied stashed changes.' };
+    }
+    if (sub === 'list') {
+      if (!this.gitState.stash.length) return { message: 'No stash entries.' };
+      return { message: this.gitState.stash.map((_, i) => `stash@{${i}}: WIP`).join('\n') };
+    }
+    return { error: `Unknown stash command. Use: git stash, git stash pop, git stash list` };
+  }
+
   gitStatus() {
     if (!this.gitState.initialized) return { error: 'Not a git repository.' };
     const staged = Object.keys(this.gitState.index);
@@ -1067,7 +1204,7 @@ class SudoQuest {
     this.sessionStartTime = Date.now();
     this.levelStartTime = Date.now();
     this.timerRunning = true;
-    this.timerInterval = setInterval(() => this.updateTimerDisplay(), 50);
+    this.timerInterval = setInterval(() => this.updateTimerDisplay(), 250);
   }
 
   setupTimerDisplay() {
@@ -1103,7 +1240,7 @@ class SudoQuest {
 
   renderSplits() {
     if (!this.splitsList) return;
-    this.splitsList.innerHTML = '';
+    const frag = document.createDocumentFragment();
 
     this.levels.forEach((level, i) => {
       const done = this.completedLevels.has(level.id);
@@ -1128,8 +1265,11 @@ class SudoQuest {
         : active ? '--:--.--' : '';
 
       row.append(icon, name, time);
-      this.splitsList.appendChild(row);
+      frag.appendChild(row);
     });
+
+    this.splitsList.innerHTML = '';
+    this.splitsList.appendChild(frag);
 
     const activeRow = this.splitsList.querySelector('.split-row.active');
     if (activeRow) activeRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });

@@ -182,4 +182,34 @@ export const GIT_LEVELS = [
     hints:['Four separate add+commit cycles','Each commit = one logical change','git init, then 4x: echo "n">file.txt, git add ., git commit -m "message"'],
     validate: vGit(s=> s.commits.length>=4, 'Make at least 4 commits.'),
     successMessage:'A clean git history is documentation. Future-you will thank present-you for clear commits.' },
+
+  { id:2031, title:'Git Switch', category:'Git', type:'git',
+    question:'Init, commit a file, then use "git switch -c feature" to create and switch to a new branch.',
+    hints:['git switch -c is the modern way to create+switch','Like checkout -b but clearer intent','git init, echo "a">a.txt, git add ., git commit -m "init", git switch -c feature'],
+    validate: vGit(s=> s.currentBranch==='feature', 'Use git switch -c feature.'),
+    successMessage:'git switch is the modern replacement for git checkout (branch switching). -c creates a new branch. Clearer intent than checkout.' },
+
+  { id:2032, title:'Stash Changes', category:'Git', type:'git',
+    question:'Init, commit a file, create a new file, then stash it with "git stash".',
+    hints:['git stash saves uncommitted changes temporarily','Create a file but don\'t commit, then stash','git init, echo "a">a.txt, git add ., git commit -m "init", echo "wip">wip.txt, git stash'],
+    validate: vGit(s=> s.stash.length>=1, 'Stash your uncommitted changes.'),
+    successMessage:'git stash saves your work-in-progress without committing. Perfect for switching context quickly.' },
+
+  { id:2033, title:'Stash Pop', category:'Git', type:'git',
+    question:'Init, commit, create a file, stash it, then restore with "git stash pop".',
+    hints:['git stash pop restores the last stash','Stash first, then pop to bring changes back','git init, echo "a">a.txt, git add ., git commit -m "init", echo "wip">wip.txt, git stash, git stash pop'],
+    validate: vGit(s=> s.stash.length===0 && Object.keys(s.workingDirectory).length>0, 'Stash then pop to restore changes.'),
+    successMessage:'git stash pop applies and removes the stash. Use "git stash apply" to keep the stash entry intact.' },
+
+  { id:2034, title:'Merge a Branch', category:'Git', type:'git',
+    question:'Init, commit on main, checkout -b feature, commit there, checkout main, then "git merge feature".',
+    hints:['Switch back to main before merging','git merge brings another branch\'s changes in','git init, echo "a">a.txt, git add ., git commit -m "init", git checkout -b feature, echo "b">b.txt, git add ., git commit -m "feat", git checkout main, git merge feature'],
+    validate: vGit(s=> s.currentBranch==='main' && s.merged.includes('feature'), 'Merge feature into main.'),
+    successMessage:'git merge combines branch histories. Fast-forward merges are linear; merge commits show where branches joined.' },
+
+  { id:2035, title:'Full Feature Flow', category:'Git', type:'git',
+    question:'Complete flow: init, commit, switch -c feature, commit, switch main, merge feature.',
+    hints:['This is the real-world workflow','Use git switch instead of checkout','git init, echo "base">b.txt, git add ., git commit -m "init", git switch -c feature, echo "new">f.txt, git add ., git commit -m "Add feature", git switch main, git merge feature'],
+    validate: vGit(s=> s.currentBranch==='main' && s.merged.length>=1 && s.commits.length>=3, 'Complete the full feature branch + merge flow.'),
+    successMessage:'Branch → develop → merge is the core Git workflow. Add pull requests for code review and you have the industry standard.' },
 ];
