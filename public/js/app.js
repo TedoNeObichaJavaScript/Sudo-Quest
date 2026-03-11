@@ -91,6 +91,10 @@ class SudoQuest {
     this.setupTimerDisplay();
     if (this.gameStarted && this.currentCategory) {
       this.levels = getLevelsForCategory(this.currentCategory);
+      // Clamp index to valid range (guards against stale/corrupt localStorage)
+      if (this.currentLevelIndex < 0 || this.currentLevelIndex >= this.levels.length) {
+        this.currentLevelIndex = 0;
+      }
       this.showTimerSidebar(true);
       this.startTimer();
       this.renderSplits();
@@ -371,7 +375,7 @@ class SudoQuest {
       const stars = this.getDifficulty(index, this.levels.length);
       const diffLabel = ['Easy','Medium','Hard'][stars - 1];
       this.addLine(`\u2554${bar}\u2557`, 'level-header');
-      const title = `  LEVEL ${level.id}: ${level.title}`;
+      const title = `  LEVEL ${index + 1}: ${level.title}`;
       const cat = `  Category: ${level.category}  |  ${'\u2605'.repeat(stars)} ${diffLabel}`;
       this.addLine(`\u2551${title.padEnd(56)}\u2551`, 'level-header');
       this.addLine(`\u2551${cat.padEnd(56)}\u2551`, 'level-header');
@@ -471,6 +475,7 @@ class SudoQuest {
   }
 
   handleSpecialCommand(cmd) {
+    if (this.isExecuting) return false;
     const commands = {
       help: () => this.showHelp(),
       hint: () => this.revealHint(),
@@ -488,19 +493,23 @@ class SudoQuest {
       '?': () => this.toggleKbOverlay(),
     };
 
-    if (commands[cmd]) { commands[cmd](); return true; }
+    const run = (fn) => {
+      this.isExecuting = true;
+      try { fn(); } finally { this.isExecuting = false; }
+      return true;
+    };
+
+    if (commands[cmd]) return run(commands[cmd]);
 
     if (cmd.startsWith('level ')) {
       const num = parseInt(cmd.split(' ')[1]);
-      if (!isNaN(num)) { this.jumpToLevel(num); return true; }
+      if (!isNaN(num)) return run(() => this.jumpToLevel(num));
     }
     if (cmd === 'theme' || cmd.startsWith('theme ')) {
-      this.handleThemeCommand(cmd.slice(5).trim());
-      return true;
+      return run(() => this.handleThemeCommand(cmd.slice(5).trim()));
     }
     if (cmd.startsWith('load ')) {
-      this.importProgress(cmd.slice(5).trim());
-      return true;
+      return run(() => this.importProgress(cmd.slice(5).trim()));
     }
     return false;
   }
@@ -665,10 +674,10 @@ class SudoQuest {
       const marker = done ? '\u2713' : current ? '>' : ' ';
       const status = done ? 'success' : current ? 'question' : 'dim';
       const time = this.levelTimes[l.id] ? ` (${this.formatTime(this.levelTimes[l.id])})` : '';
-      this.addLine(`  ${marker} Level ${l.id}: ${l.title}${time}`, status);
+      this.addLine(`  ${marker} Level ${i + 1}: ${l.title}${time}`, status);
     });
     this.addBlank();
-    this.addLine('Type "level N" to jump to a level.', 'dim');
+    this.addLine('Type "level N" to jump to a level (1-' + this.levels.length + ').', 'dim');
     this.addBlank();
   }
 
@@ -687,9 +696,10 @@ class SudoQuest {
   }
 
   jumpToLevel(num) {
-    const idx = this.levels.findIndex(l => l.id === num);
-    if (idx === -1) {
-      this.addLine(`Level ${num} not found in current category. Type 'levels' to see all.`, 'error');
+    // Accept 1-based level number within category
+    const idx = num - 1;
+    if (idx < 0 || idx >= this.levels.length) {
+      this.addLine(`Level ${num} not found. Valid range: 1-${this.levels.length}. Type 'levels' to see all.`, 'error');
       return;
     }
     this.currentLevelIndex = idx;
@@ -1374,7 +1384,7 @@ class SudoQuest {
       const name = document.createElement('span');
       name.className = 'split-name';
       name.textContent = level.title;
-      name.title = `Level ${level.id}: ${level.title}`;
+      name.title = `Level ${i + 1}: ${level.title}`;
 
       const diff = document.createElement('span');
       diff.className = 'split-difficulty';
