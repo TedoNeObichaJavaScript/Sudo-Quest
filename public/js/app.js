@@ -347,8 +347,22 @@ class SudoQuest {
     this.sandboxLessonIndex = 0;
     this.sandboxConceptIndex = 0;
 
+    // Playground state
+    this.playgroundMode = false;
+
+    // Streak state
+    this.loginDates = [];      // array of 'YYYY-MM-DD' strings
+    this.currentStreak = 0;
+    this.longestStreak = 0;
+
+    // Daily challenge state
+    this.dailyChallengeCompleted = {}; // { 'YYYY-MM-DD': true }
+
+    // Spaced repetition
+    this.reviewQueue = [];     // [{catKey, levelId, dueDate}]
+
     // Tab completion
-    this.tabCommands = ['hint','clear','reset','restart','levels','categories','skip','next','theme','help','explain','save','load','achievements','score','learn','sandbox','sound'];
+    this.tabCommands = ['hint','clear','reset','restart','levels','categories','skip','next','theme','help','explain','save','load','achievements','score','learn','sandbox','sound','stats','playground','streak','daily','review','projects'];
 
     // DOM elements
     this.output = document.getElementById('output');
@@ -382,6 +396,7 @@ class SudoQuest {
   init() {
     this.loadTheme();
     this.loadProgress();
+    this.recordLogin();
     this.setupEventListeners();
     this.setupTimerDisplay();
     if (this.gameStarted && this.currentCategory) {
@@ -509,6 +524,14 @@ class SudoQuest {
     this.addLine('Welcome to sudo quest! Learn to code, one command at a time.', 'system');
     this.addBlank();
     this.addLine('New here? Type "learn" to start the guided sandbox.', 'hint');
+    this.addLine('Type "playground" for a free JS REPL, "daily" for today\'s challenge.', 'hint');
+    if (this.currentStreak > 1) {
+      this.addLine(`Login streak: ${this.currentStreak} days!`, 'success');
+    }
+    const dueReviews = this.getDueReviews();
+    if (dueReviews.length) {
+      this.addLine(`${dueReviews.length} review${dueReviews.length > 1 ? 's' : ''} due — type "review" to practice.`, 'hint');
+    }
     this.addBlank();
     this.addLine('Are you ready?  (y/n)', 'question');
     this.addBlank();
@@ -537,6 +560,15 @@ class SudoQuest {
       this.enterSandbox();
       return true;
     }
+    if (input === 'playground') {
+      this.awaitingReady = false;
+      this.enterPlayground();
+      return true;
+    }
+    if (input === 'stats') { this.showStats(); return true; }
+    if (input === 'streak') { this.showStreak(); return true; }
+    if (input === 'daily') { this.showDailyChallenge(); return true; }
+    if (input === 'review') { this.showReview(); return true; }
     if (input === 'y' || input === 'yes') {
       this.awaitingReady = false;
       this.showCategoryScreen();
@@ -587,7 +619,13 @@ class SudoQuest {
       gameStarted: this.gameStarted,
       score: this.score,
       personalBests: this.personalBests,
-      achievements: [...this.achievements]
+      achievements: [...this.achievements],
+      loginDates: this.loginDates,
+      currentStreak: this.currentStreak,
+      longestStreak: this.longestStreak,
+      dailyChallengeCompleted: this.dailyChallengeCompleted,
+      reviewQueue: this.reviewQueue,
+      firstTryStreak: this.firstTryStreak
     };
     try {
       localStorage.setItem('sudoquest_progress', JSON.stringify(data));
@@ -608,6 +646,12 @@ class SudoQuest {
         this.score = data.score || {};
         this.personalBests = data.personalBests || {};
         this.achievements = new Set(data.achievements || []);
+        this.loginDates = data.loginDates || [];
+        this.currentStreak = data.currentStreak || 0;
+        this.longestStreak = data.longestStreak || 0;
+        this.dailyChallengeCompleted = data.dailyChallengeCompleted || {};
+        this.reviewQueue = data.reviewQueue || [];
+        this.firstTryStreak = data.firstTryStreak || 0;
       }
     } catch (_) {}
   }
@@ -736,6 +780,7 @@ class SudoQuest {
 
     // Ready/Category screens
     const lower = trimmed.toLowerCase();
+    if (this.playgroundMode) { this.handlePlaygroundInput(trimmed); return; }
     if (this.sandboxMode) { this.handleSandboxInput(trimmed); return; }
     if (this.awaitingReady) { this.handleReadyInput(lower); return; }
     if (this.awaitingCategory) { this.handleCategoryInput(lower); return; }
@@ -805,6 +850,12 @@ class SudoQuest {
       learn: () => this.enterSandbox(),
       sandbox: () => this.enterSandbox(),
       sound: () => this.toggleSound(),
+      stats: () => this.showStats(),
+      playground: () => this.enterPlayground(),
+      streak: () => this.showStreak(),
+      daily: () => this.showDailyChallenge(),
+      review: () => this.showReview(),
+      projects: () => this.showProjects(),
     };
 
     const run = (fn) => {
@@ -850,7 +901,13 @@ class SudoQuest {
       ['load <data>',  'Import progress'],
       ['achievements', 'View badges'],
       ['score',        'Score summary'],
+      ['stats',        'Progress dashboard'],
       ['learn',        'Learning sandbox'],
+      ['playground',   'JS code playground'],
+      ['streak',       'Login streak calendar'],
+      ['daily',        'Daily challenge'],
+      ['review',       'Spaced review queue'],
+      ['projects',     'Mini-project tracker'],
       ['sound',        'Toggle sound fx'],
       ['?',            'Keyboard shortcuts'],
       ['help',         'Show this help'],
@@ -965,6 +1022,9 @@ class SudoQuest {
     this.levelStartTime = null;
     this.score = {};
     this.firstTryStreak = 0;
+    this.dailyChallengeCompleted = {};
+    this.reviewQueue = [];
+    // Keep loginDates/streaks — those are persistent across restarts
 
     // Reset display
     if (this.timerClock) this.timerClock.textContent = '0:00.00';
@@ -1620,6 +1680,17 @@ class SudoQuest {
     // Check achievements
     this.checkAchievements();
 
+    // Daily challenge check
+    this.checkDailyChallenge(id);
+
+    // Spaced repetition: schedule review for struggled levels (2+ attempts or hints used)
+    if ((this.attempts[id] || 0) >= 2 || (this.hintsRevealed[id] || 0) > 0) {
+      this.scheduleReview(this.currentCategory, id);
+    }
+
+    // Remove from review queue if re-completing a review item
+    this.removeFromReviewQueue(id);
+
     // Check category complete
     const allDone = this.levels.every(l => this.completedLevels.has(l.id));
     if (allDone) {
@@ -1735,9 +1806,13 @@ class SudoQuest {
   // ── Difficulty ─────────────────────────────────────────────
 
   getDifficulty(levelIndex, totalLevels) {
-    const third = totalLevels / 3;
-    if (levelIndex < third) return 1;
-    if (levelIndex < third * 2) return 2;
+    // First ~30% very easy, middle ~40% medium, last ~30% hard
+    // Within first 10 levels: always easy; within last 10: always hard
+    if (levelIndex < 10) return 1;
+    if (levelIndex >= totalLevels - 10) return 3;
+    const pos = (levelIndex - 10) / Math.max(1, totalLevels - 20);
+    if (pos < 0.4) return 1;
+    if (pos < 0.75) return 2;
     return 3;
   }
 
@@ -1777,18 +1852,53 @@ class SudoQuest {
   showExplain() {
     // Show explanation for the most recently completed level or current level
     const idx = this.currentLevelIndex;
-    // Check previous level (just completed) first
     const prevLevel = idx > 0 ? this.levels[idx - 1] : null;
     const level = (prevLevel && this.completedLevels.has(prevLevel.id)) ? prevLevel : this.levels[idx];
     if (!level) return;
 
+    const stars = this.getDifficulty(this.levels.indexOf(level), this.levels.length);
+    const diffLabel = ['Easy', 'Medium', 'Hard'][stars - 1];
+
     this.addBlank();
-    this.addLine(`\u2550\u2550 ${level.title} \u2550\u2550`, 'system');
+    this.addLine(`\u2554${'═'.repeat(50)}\u2557`, 'system');
+    this.addLine(`\u2551  ${level.title.padEnd(48)}\u2551`, 'system');
+    this.addLine(`\u255A${'═'.repeat(50)}\u255D`, 'system');
     this.addBlank();
+
+    // Concept explanation
     if (level.successMessage) {
-      this.addLine(level.successMessage, 'success-message');
-    } else {
-      this.addLine('No additional explanation available for this level.', 'dim');
+      this.addLine('Why it works:', 'level-header');
+      this.addLine(`  ${level.successMessage}`, 'success-message');
+      this.addBlank();
+    }
+
+    // Hints as learning notes
+    if (level.hints?.length) {
+      this.addLine('Key concepts:', 'level-header');
+      level.hints.forEach((h, i) => {
+        this.addLine(`  ${i + 1}. ${h}`, 'dim');
+      });
+      this.addBlank();
+    }
+
+    // Performance on this level
+    const id = level.id;
+    const attempts = this.attempts[id] || 0;
+    const hints = this.hintsRevealed[id] || 0;
+    const pts = this.score[id] ?? 100;
+    const time = this.levelTimes[id];
+    this.addLine('Your performance:', 'level-header');
+    this.addLine(`  Difficulty: ${'★'.repeat(stars)} ${diffLabel}`, 'dim');
+    this.addLine(`  Attempts: ${attempts}  |  Hints: ${hints}/3  |  Score: ${pts} pts`, 'dim');
+    if (time) this.addLine(`  Time: ${this.formatTime(time)}`, 'dim');
+
+    // Tip based on performance
+    if (attempts > 3) {
+      this.addBlank();
+      this.addLine('Tip: This one was tough! It\'s queued for spaced review.', 'hint');
+    } else if (hints === 0 && attempts === 0) {
+      this.addBlank();
+      this.addLine('Perfect solve — no hints, no mistakes!', 'success');
     }
     this.addBlank();
   }
@@ -2263,6 +2373,425 @@ class SudoQuest {
     this.addLine('Type "next" for the next concept, or try more code.', 'dim');
   }
 
+  // ── Streak System ───────────────────────────────────────────
+
+  getTodayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  recordLogin() {
+    const today = this.getTodayStr();
+    if (this.loginDates[this.loginDates.length - 1] === today) return;
+    this.loginDates.push(today);
+    // Keep last 365 days only
+    if (this.loginDates.length > 365) this.loginDates = this.loginDates.slice(-365);
+    // Calculate streak
+    this.currentStreak = 1;
+    for (let i = this.loginDates.length - 2; i >= 0; i--) {
+      const prev = new Date(this.loginDates[i]);
+      const curr = new Date(this.loginDates[i + 1]);
+      const diff = (curr - prev) / 86400000;
+      if (diff <= 1) this.currentStreak++;
+      else break;
+    }
+    if (this.currentStreak > this.longestStreak) this.longestStreak = this.currentStreak;
+    this.saveProgress();
+  }
+
+  showStreak() {
+    this.addBlank();
+    this.addLine('\u2550\u2550 Login Streak \u2550\u2550', 'system');
+    this.addBlank();
+    this.addLine(`  Current streak: ${this.currentStreak} day${this.currentStreak !== 1 ? 's' : ''}`, 'system');
+    this.addLine(`  Longest streak: ${this.longestStreak} day${this.longestStreak !== 1 ? 's' : ''}`, 'system');
+    this.addLine(`  Total active days: ${this.loginDates.length}`, 'system');
+    this.addBlank();
+    // Visual calendar — last 28 days
+    const today = new Date(this.getTodayStr());
+    const dateSet = new Set(this.loginDates);
+    let row2 = '  '; // activity row
+    for (let i = 27; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      row2 += dateSet.has(key) ? '\u2588' : '\u2591';
+    }
+    this.addLine('  Last 28 days:', 'dim');
+    this.addLine(row2, 'success');
+    this.addBlank();
+  }
+
+  // ── Stats Dashboard ───────────────────────────────────────
+
+  showStats() {
+    this.addBlank();
+    this.addLine('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557', 'system');
+    this.addLine('\u2551         PROGRESS DASHBOARD            \u2551', 'system');
+    this.addLine('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D', 'system');
+    this.addBlank();
+
+    // Overall stats
+    let totalLevels = 0, totalCompleted = 0, totalScore = 0, totalAttempts = 0, totalHints = 0;
+    const weakest = []; // {catKey, catName, accuracy}
+
+    for (const cat of CATEGORIES) {
+      const catLevels = cat.levels;
+      const done = catLevels.filter(l => this.completedLevels.has(l.id));
+      const catAttempts = catLevels.reduce((s, l) => s + (this.attempts[l.id] || 0), 0);
+      const catHints = catLevels.reduce((s, l) => s + (this.hintsRevealed[l.id] || 0), 0);
+      const catScore = done.reduce((s, l) => s + (this.score[l.id] ?? 100), 0);
+      const catTime = catLevels.reduce((s, l) => s + (this.levelTimes[l.id] || 0), 0);
+      const pct = catLevels.length ? Math.round((done.length / catLevels.length) * 100) : 0;
+      // Accuracy = levels completed first try (0 extra attempts) / completed
+      const firstTry = done.filter(l => (this.attempts[l.id] || 0) === 0).length;
+      const accuracy = done.length ? Math.round((firstTry / done.length) * 100) : 0;
+
+      totalLevels += catLevels.length;
+      totalCompleted += done.length;
+      totalScore += catScore;
+      totalAttempts += catAttempts;
+      totalHints += catHints;
+
+      // Progress bar (20 chars wide)
+      const filled = Math.round(pct / 5);
+      const bar = '\u2588'.repeat(filled) + '\u2591'.repeat(20 - filled);
+
+      this.addLine(`  ${cat.name}`, 'level-header');
+      this.addLine(`    [${bar}] ${pct}%  (${done.length}/${catLevels.length})`, done.length === catLevels.length ? 'success' : 'system');
+      if (done.length > 0) {
+        const timeStr = catTime > 0 ? this.formatTime(catTime) : '--';
+        this.addLine(`    Score: ${catScore}  |  Accuracy: ${accuracy}%  |  Time: ${timeStr}`, 'dim');
+      }
+
+      if (done.length > 0 && accuracy < 60) {
+        weakest.push({ name: cat.name, accuracy });
+      }
+    }
+
+    this.addBlank();
+    const overallPct = totalLevels ? Math.round((totalCompleted / totalLevels) * 100) : 0;
+    this.addLine(`  Overall: ${totalCompleted}/${totalLevels} levels (${overallPct}%)`, 'system');
+    this.addLine(`  Total Score: ${totalScore} pts  |  Hints Used: ${totalHints}`, 'system');
+    this.addLine(`  Streak: ${this.currentStreak} day${this.currentStreak !== 1 ? 's' : ''} (best: ${this.longestStreak})`, 'system');
+
+    // Peer comparison (estimated percentile)
+    const avgScore = totalCompleted ? totalScore / totalCompleted : 0;
+    const percentile = this.estimatePercentile(totalCompleted, avgScore, totalHints);
+    this.addLine(`  Estimated rank: top ${percentile}% of learners`, 'hint');
+
+    if (weakest.length) {
+      this.addBlank();
+      this.addLine('  Weakest areas (< 60% accuracy):', 'error');
+      weakest.sort((a, b) => a.accuracy - b.accuracy);
+      weakest.forEach(w => this.addLine(`    ${w.name}: ${w.accuracy}% accuracy`, 'error'));
+    }
+
+    // Check for pending reviews
+    const dueReviews = this.getDueReviews();
+    if (dueReviews.length) {
+      this.addBlank();
+      this.addLine(`  ${dueReviews.length} review${dueReviews.length > 1 ? 's' : ''} due! Type "review" to practice.`, 'hint');
+    }
+
+    this.addBlank();
+  }
+
+  // ── Peer Comparison (Estimated Percentile) ────────────────
+
+  estimatePercentile(completed, avgScore, hintsUsed) {
+    // Estimate based on local performance vs expected distributions
+    // More levels + higher avg score + fewer hints = better rank
+    // This is an approximation to motivate — not real server data
+    let raw = 0;
+    raw += Math.min(completed * 0.5, 30);          // up to 30 pts for volume
+    raw += Math.min(avgScore, 100) * 0.4;           // up to 40 pts for quality
+    raw += Math.max(0, 30 - hintsUsed * 0.3);       // up to 30 pts for independence
+    // Clamp to 1-99
+    const percentile = Math.max(1, Math.min(99, Math.round(100 - raw)));
+    return percentile;
+  }
+
+  // ── Spaced Repetition ─────────────────────────────────────
+
+  scheduleReview(catKey, levelId) {
+    // Schedule review 1 day, 3 days, 7 days from now for struggled levels
+    const now = new Date();
+    const intervals = [1, 3, 7];
+    for (const days of intervals) {
+      const due = new Date(now);
+      due.setDate(due.getDate() + days);
+      const dueStr = `${due.getFullYear()}-${String(due.getMonth() + 1).padStart(2, '0')}-${String(due.getDate()).padStart(2, '0')}`;
+      // Avoid duplicates
+      if (!this.reviewQueue.some(r => r.levelId === levelId && r.dueDate === dueStr)) {
+        this.reviewQueue.push({ catKey, levelId, dueDate: dueStr });
+      }
+    }
+    // Keep queue manageable (max 100 entries)
+    if (this.reviewQueue.length > 100) this.reviewQueue = this.reviewQueue.slice(-100);
+    this.saveProgress();
+  }
+
+  getDueReviews() {
+    const today = this.getTodayStr();
+    return this.reviewQueue.filter(r => r.dueDate <= today);
+  }
+
+  showReview() {
+    const due = this.getDueReviews();
+    this.addBlank();
+    if (!due.length) {
+      this.addLine('No reviews due! Keep up the great work.', 'success');
+      this.addBlank();
+      return;
+    }
+    this.addLine('\u2550\u2550 Spaced Review \u2550\u2550', 'system');
+    this.addBlank();
+    this.addLine(`${due.length} level${due.length > 1 ? 's' : ''} due for review:`, 'system');
+    this.addBlank();
+    due.slice(0, 10).forEach((r) => {
+      const cat = getCategoryByKey(r.catKey);
+      if (!cat) return;
+      const level = cat.levels.find(l => l.id === r.levelId);
+      if (!level) return;
+      const catIdx = cat.levels.indexOf(level) + 1;
+      this.addLine(`  ${i + 1}. [${cat.name}] Level ${catIdx}: ${level.title}`, 'question');
+    });
+    this.addBlank();
+    this.addLine('Switch to the category and jump to the level to review.', 'dim');
+    this.addLine('Completing the level again removes it from the review queue.', 'dim');
+    this.addBlank();
+  }
+
+  removeFromReviewQueue(levelId) {
+    const today = this.getTodayStr();
+    this.reviewQueue = this.reviewQueue.filter(r => !(r.levelId === levelId && r.dueDate <= today));
+  }
+
+  // ── Daily Challenge ───────────────────────────────────────
+
+  getDailySeed() {
+    const today = this.getTodayStr();
+    // Simple hash from date string
+    let hash = 0;
+    for (let i = 0; i < today.length; i++) {
+      hash = ((hash << 5) - hash) + today.charCodeAt(i);
+      hash |= 0;
+    }
+    return Math.abs(hash);
+  }
+
+  showDailyChallenge() {
+    const today = this.getTodayStr();
+    this.addBlank();
+    this.addLine('\u2550\u2550 Daily Challenge \u2550\u2550', 'system');
+    this.addBlank();
+
+    if (this.dailyChallengeCompleted[today]) {
+      this.addLine('You already completed today\'s challenge!', 'success');
+      this.addLine('Come back tomorrow for a new one.', 'dim');
+      this.addBlank();
+      return;
+    }
+
+    // Pick a deterministic level from all categories
+    const allLevels = [];
+    for (const cat of CATEGORIES) {
+      cat.levels.forEach(l => allLevels.push({ level: l, catKey: cat.key, catName: cat.name }));
+    }
+    const seed = this.getDailySeed();
+    const pick = allLevels[seed % allLevels.length];
+
+    this.addLine(`  Category: ${pick.catName}`, 'system');
+    this.addLine(`  Challenge: ${pick.level.title}`, 'question');
+    this.addBlank();
+    this.addLine(`> ${pick.level.question}`, 'question');
+    this.addBlank();
+
+    if (this.completedLevels.has(pick.level.id)) {
+      this.addLine('You\'ve already beaten this level — try it again for speed!', 'dim');
+    }
+    this.addLine(`Switch to "${pick.catKey}" and find this level to complete the daily.`, 'dim');
+    this.addBlank();
+
+    // Store which level is today's challenge for completion tracking
+    this._dailyChallengeId = pick.level.id;
+  }
+
+  checkDailyChallenge(levelId) {
+    const today = this.getTodayStr();
+    if (this.dailyChallengeCompleted[today]) return;
+    // Check if this level matches today's daily
+    const allLevels = [];
+    for (const cat of CATEGORIES) {
+      cat.levels.forEach(l => allLevels.push(l));
+    }
+    const seed = this.getDailySeed();
+    const dailyLevel = allLevels[seed % allLevels.length];
+    if (dailyLevel && dailyLevel.id === levelId) {
+      this.dailyChallengeCompleted[today] = true;
+      this.saveProgress();
+      this.addLine('Daily challenge completed!', 'success');
+      sound.playAchievement();
+    }
+  }
+
+  // ── Code Playground (Free REPL) ───────────────────────────
+
+  enterPlayground() {
+    this.playgroundMode = true;
+    // Pause timer
+    if (this.timerRunning) {
+      this.timerPausedByPlayground = true;
+      this.timerRunning = false;
+      if (this.timerInterval) clearInterval(this.timerInterval);
+      this.timerInterval = null;
+      this.timerElapsedBeforePlayground = Date.now() - this.sessionStartTime;
+      this.levelElapsedBeforePlayground = Date.now() - this.levelStartTime;
+    }
+
+    this.clearTerminal();
+    this.addLine('\u2550\u2550 JS Playground \u2550\u2550', 'system');
+    this.addBlank();
+    this.addLine('Free-form JavaScript REPL. No levels, no scoring.', 'dim');
+    this.addLine('Type any JS code and press Enter to execute.', 'dim');
+    this.addLine('Type "exit" to return to the game.', 'dim');
+    this.addBlank();
+    this.addLine('> Ready. Try something!', 'success');
+    this.addBlank();
+  }
+
+  async handlePlaygroundInput(input) {
+    const lower = input.toLowerCase().trim();
+    if (lower === 'exit' || lower === 'quit' || lower === 'q') {
+      this.playgroundMode = false;
+      // Resume timer
+      if (this.timerPausedByPlayground) {
+        this.timerPausedByPlayground = false;
+        this.sessionStartTime = Date.now() - this.timerElapsedBeforePlayground;
+        this.levelStartTime = Date.now() - this.levelElapsedBeforePlayground;
+        this.timerRunning = true;
+        this.timerInterval = setInterval(() => this.updateTimerDisplay(), 50);
+      }
+      this.clearTerminal();
+      if (this.gameStarted && this.currentCategory) {
+        this.loadLevel(this.currentLevelIndex);
+      } else {
+        this.showReadyScreen();
+      }
+      return;
+    }
+    if (lower === 'clear') {
+      this.clearTerminal();
+      this.addLine('\u2550\u2550 JS Playground \u2550\u2550  (type "exit" to leave)', 'system');
+      this.addBlank();
+      return;
+    }
+
+    this.isExecuting = true;
+    this.runBtn.textContent = '...';
+    this.runBtn.disabled = true;
+    try {
+      const result = await this.runInSandbox(input);
+      if (result.consoleLogs?.length) {
+        result.consoleLogs.forEach(log => this.addLine(log, 'output'));
+      }
+      if (result.errors?.length) {
+        result.errors.forEach(err => this.addLine(`Error: ${err}`, 'error'));
+      } else if (!result.consoleLogs?.length) {
+        // Show return value for expressions
+        const vars = result.variables || {};
+        const keys = Object.keys(vars);
+        if (keys.length) {
+          this.addLine(`\u2192 ${JSON.stringify(vars[keys[keys.length - 1]])}`, 'output');
+        }
+      }
+    } catch (err) {
+      this.addLine(`Error: ${err.message}`, 'error');
+    } finally {
+      this.isExecuting = false;
+      this.runBtn.textContent = 'RUN';
+      this.runBtn.disabled = false;
+      this.input.focus();
+    }
+    this.addBlank();
+  }
+
+  // ── Multi-step Projects ───────────────────────────────────
+
+  getProjectsForCategory(catKey) {
+    // Define mini-projects as chains of level ranges within a category
+    const projects = {
+      js: [
+        { name: 'Hello World Builder', desc: 'Master variables, output, and string basics', levels: [1, 2, 3, 4, 5], icon: '\u2691' },
+        { name: 'Logic Machine', desc: 'Build conditional logic and operators', levels: [6, 7, 8, 9, 10], icon: '\u2699' },
+        { name: 'Function Workshop', desc: 'Create reusable code blocks', levels: [11, 12, 13, 14, 15], icon: '\u2692' },
+        { name: 'Data Structures Lab', desc: 'Work with arrays and objects', levels: [16, 17, 18, 19, 20], icon: '\u2610' },
+        { name: 'Advanced Patterns', desc: 'Tackle higher-order functions and closures', levels: [21, 22, 23, 24, 25], icon: '\u269B' },
+        { name: 'Master Challenge', desc: 'Prove your JS mastery', levels: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35], icon: '\u2605' },
+      ],
+      git: [
+        { name: 'Repo Setup', desc: 'Init, add, commit basics', levels: [1, 2, 3, 4, 5], icon: '\u2691' },
+        { name: 'Branch Master', desc: 'Branching, merging, stash', levels: [6, 7, 8, 9, 10], icon: '\u2699' },
+        { name: 'Git Workflows', desc: 'Advanced git operations', levels: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], icon: '\u2692' },
+      ],
+      cmd: [
+        { name: 'File Explorer', desc: 'Navigate and manage files', levels: [1, 2, 3, 4, 5], icon: '\u2691' },
+        { name: 'Pipe Builder', desc: 'Chain commands together', levels: [6, 7, 8, 9, 10], icon: '\u2699' },
+        { name: 'Shell Mastery', desc: 'Environment and advanced commands', levels: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], icon: '\u2692' },
+      ],
+    };
+    return projects[catKey] || this.generateGenericProjects(catKey);
+  }
+
+  generateGenericProjects(catKey) {
+    const cat = getCategoryByKey(catKey);
+    if (!cat) return [];
+    const total = cat.levels.length;
+    const projects = [];
+    for (let i = 0; i < total; i += 5) {
+      const end = Math.min(i + 5, total);
+      const nums = [];
+      for (let j = i + 1; j <= end; j++) nums.push(j);
+      projects.push({
+        name: `${cat.name} Project ${projects.length + 1}`,
+        desc: `Levels ${i + 1}-${end}`,
+        levels: nums,
+        icon: '\u2610'
+      });
+    }
+    return projects;
+  }
+
+  showProjects() {
+    if (!this.currentCategory) {
+      this.addLine('Select a category first to see projects.', 'dim');
+      return;
+    }
+    const projects = this.getProjectsForCategory(this.currentCategory);
+    this.addBlank();
+    this.addLine('\u2550\u2550 Mini-Projects \u2550\u2550', 'system');
+    this.addBlank();
+
+    projects.forEach((proj) => {
+      const done = proj.levels.every(n => {
+        const level = this.levels[n - 1];
+        return level && this.completedLevels.has(level.id);
+      });
+      const progress = proj.levels.filter(n => {
+        const level = this.levels[n - 1];
+        return level && this.completedLevels.has(level.id);
+      }).length;
+      const mark = done ? '\u2713' : `${progress}/${proj.levels.length}`;
+      const type = done ? 'success' : progress > 0 ? 'question' : 'dim';
+      this.addLine(`  ${proj.icon} ${proj.name} [${mark}]`, type);
+      this.addLine(`    ${proj.desc} (levels ${proj.levels[0]}-${proj.levels[proj.levels.length - 1]})`, 'dim');
+    });
+    this.addBlank();
+    this.addLine('Jump to a project\'s first level with "level N".', 'dim');
+    this.addBlank();
+  }
+
   // ── Category Complete ──────────────────────────────────────
 
   showCategoryComplete() {
@@ -2292,6 +2821,15 @@ class SudoQuest {
   \u2551                                                   \u2551
   \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D`;
     this.addHTML(`<pre class="completion-art">${art}</pre>`, 'success');
+
+    // Show review suggestion for struggled levels
+    const struggled = this.levels.filter(l =>
+      (this.attempts[l.id] || 0) >= 2 || (this.hintsRevealed[l.id] || 0) > 0
+    );
+    if (struggled.length) {
+      this.addLine(`${struggled.length} level${struggled.length > 1 ? 's' : ''} queued for spaced review. Type "review" later to revisit.`, 'hint');
+    }
+    this.addLine('Type "stats" for your full progress dashboard.', 'dim');
     this.addBlank();
   }
 }
