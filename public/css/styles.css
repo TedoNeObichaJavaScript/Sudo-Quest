@@ -525,7 +525,7 @@ html, body {
 
 /* ASCII art */
 .ascii-art {
-  font-size: 10px;
+  font-size: 16px;
   line-height: 1.2;
   color: var(--accent);
   text-shadow: 0 0 8px var(--accent-glow);
@@ -535,7 +535,7 @@ html, body {
 
 @media (min-width: 640px) {
   .ascii-art {
-    font-size: 13px;
+    font-size: 22px;
   }
 }
 

@@ -137,10 +137,9 @@ class SudoQuest {
   showReadyScreen() {
     this.clearTerminal();
     const art = `
-  ___  _   _  ___   ___     ___  _   _  ___  ___  _____
- / __|| | | ||   \\ / _ \\   / _ \\| | | || __|/ __||_   _|
- \\__ \\| |_| || |) | (_) | | (_) | |_| || _| \\__ \\  | |
- |___/ \\___/ |___/ \\___/   \\__\\_\\\\___/ |___||___/  |_|`;
+ ╔═╗ ╦ ╦ ╔╦╗ ╔═╗   ╔═╗ ╦ ╦ ╔═╗ ╔═╗ ╔╦╗
+ ╚═╗ ║ ║  ║║ ║ ║   ║ ║ ║ ║ ║╣  ╚═╗  ║
+ ╚═╝ ╚═╝ ═╩╝ ╚═╝   ╚═╝ ╚═╝ ╚═╝ ╚═╝  ╩`;
 
     this.addHTML(`<pre class="ascii-art">${art}</pre>`, 'system');
     this.addBlank();
@@ -1204,7 +1203,7 @@ class SudoQuest {
     this.sessionStartTime = Date.now();
     this.levelStartTime = Date.now();
     this.timerRunning = true;
-    this.timerInterval = setInterval(() => this.updateTimerDisplay(), 250);
+    this.timerInterval = setInterval(() => this.updateTimerDisplay(), 50);
   }
 
   setupTimerDisplay() {
