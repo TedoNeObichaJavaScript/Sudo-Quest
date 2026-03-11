@@ -15,7 +15,7 @@
     <header class="header">
       <div class="header-left">
         <h1 class="logo">sudo quest</h1>
-        <span class="version">v1.0</span>
+        <span class="version">v2.0</span>
       </div>
       <div class="header-center">
         <span id="category-display" class="category-badge">Basics</span>
@@ -28,34 +28,55 @@
       </div>
     </header>
 
-    <!-- Terminal -->
-    <main class="terminal">
-      <div class="terminal-bar">
-        <div class="terminal-dots">
-          <span class="dot dot-red"></span>
-          <span class="dot dot-yellow"></span>
-          <span class="dot dot-green"></span>
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Timer Sidebar -->
+      <aside class="timer-sidebar" id="timer-sidebar">
+        <div class="timer-header">
+          <span class="timer-title">sudo quest</span>
+          <span class="timer-subtitle">Task Completion</span>
         </div>
-        <span class="terminal-title">user@sudoquest:~$</span>
-      </div>
+        <div class="splits-list" id="splits-list">
+          <!-- Splits populated by JS -->
+        </div>
+        <div class="timer-footer">
+          <div class="timer-clock" id="timer-clock">0:00.00</div>
+          <div class="timer-segment">
+            <span class="segment-label">Current Level</span>
+            <span class="segment-time" id="segment-time">0:00.00</span>
+          </div>
+        </div>
+      </aside>
 
-      <div id="output" class="terminal-output"></div>
+      <!-- Terminal -->
+      <main class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span class="terminal-title">user@sudoquest:~$</span>
+        </div>
 
-      <div class="terminal-input-area">
-        <span class="prompt">$</span>
-        <input
-          type="text"
-          id="input"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-          autofocus
-          placeholder="Type your code here..."
-        >
-        <button id="run-btn" class="run-btn">RUN</button>
-      </div>
-    </main>
+        <div id="output" class="terminal-output"></div>
+
+        <div class="terminal-input-area">
+          <span class="prompt">$</span>
+          <textarea
+            id="input"
+            rows="1"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            autofocus
+            placeholder="Type your code here... (Shift+Enter for new line)"
+          ></textarea>
+          <button id="run-btn" class="run-btn">RUN</button>
+        </div>
+      </main>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
