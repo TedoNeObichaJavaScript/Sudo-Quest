@@ -84,6 +84,15 @@ class SoundManager {
     // Low buzz
     this.playNote(180, 0.15, t, 0.08, 'sawtooth');
   }
+
+  playWrongAnswer() {
+    const ctx = this.getCtx();
+    if (!ctx || !this.enabled) return;
+    const t = ctx.currentTime;
+    // Descending two-tone "nope": E4 → C4
+    this.playNote(329.63, 0.12, t, 0.10, 'square');
+    this.playNote(261.63, 0.18, t + 0.10, 0.10, 'square');
+  }
 }
 
 const sound = new SoundManager();
@@ -184,6 +193,102 @@ const SANDBOX_LESSONS = {
       { name: 'Methods', desc: 'Define with return type, name, parameters. void for no return.', example: 'static int Add(int a, int b) {\n  return a + b;\n}\nConsole.WriteLine(Add(3, 4));' },
       { name: 'Loops', desc: 'for, while, foreach. foreach is great for collections.', example: 'for (int i = 0; i < 5; i++) {\n  Console.WriteLine(i);\n}\nstring[] names = {"Ada", "Bob"};\nforeach (var n in names) {\n  Console.WriteLine(n);\n}' },
       { name: 'Classes', desc: 'Blueprints for objects. Properties store data, methods define behavior.', example: 'class Dog {\n  public string Name { get; set; }\n  public void Bark() {\n    Console.WriteLine(Name + " barks!");\n  }\n}' },
+    ]},
+  ],
+  python: [
+    { title: 'Python Basics', concepts: [
+      { name: 'print()', desc: 'Output text to the console. Adds a newline automatically.', example: 'print("Hello, World!")\nprint("Score:", 100)' },
+      { name: 'Variables', desc: 'No type declarations needed. Python infers the type from the value.', example: 'name = "Ada"\nscore = 100\npi = 3.14\nactive = True' },
+      { name: 'f-Strings', desc: 'Format strings with embedded expressions using f"...{expr}...".', example: 'name = "Ada"\nage = 28\nprint(f"Hello, {name}! Age: {age}")' },
+    ]},
+    { title: 'Data Structures & Control Flow', concepts: [
+      { name: 'Lists', desc: 'Ordered, mutable collections. append(), pop(), slicing.', example: 'fruits = ["apple", "banana"]\nfruits.append("cherry")\nprint(fruits[0])  # apple\nprint(fruits[:2]) # first two' },
+      { name: 'Dicts', desc: 'Key-value stores with fast lookup.', example: 'user = {"name": "Ada", "age": 28}\nprint(user["name"])\nuser["role"] = "dev"' },
+      { name: 'If / For / While', desc: 'Control flow uses indentation, not braces. Colon required.', example: 'for i in range(5):\n    if i % 2 == 0:\n        print(f"{i} is even")\n    else:\n        print(f"{i} is odd")' },
+    ]},
+  ],
+  c: [
+    { title: 'C Fundamentals', concepts: [
+      { name: 'printf()', desc: 'Print formatted output. Use format specifiers: %d, %s, %f.', example: '#include <stdio.h>\nprintf("Hello, World!\\n");\nprintf("Score: %d\\n", 100);' },
+      { name: 'Variables & Types', desc: 'C is statically typed: int, float, double, char. Declare before use.', example: 'int score = 100;\nfloat price = 9.99;\nchar grade = \'A\';\nchar name[] = "Ada";' },
+      { name: 'Pointers', desc: '* declares a pointer, & gets address. Foundation of C memory management.', example: 'int x = 42;\nint *ptr = &x;\nprintf("%d\\n", *ptr);  // 42\n*ptr = 100;  // x is now 100' },
+    ]},
+    { title: 'Functions & Memory', concepts: [
+      { name: 'Functions', desc: 'Return type, name, parameters. Must declare before use.', example: 'int add(int a, int b) {\n  return a + b;\n}\nprintf("%d", add(3, 4));' },
+      { name: 'Arrays & Strings', desc: 'Arrays are fixed-size. Strings are null-terminated char arrays.', example: 'int nums[] = {1, 2, 3};\nchar name[] = "Ada";\nprintf("%c", name[0]); // A' },
+      { name: 'malloc / free', desc: 'Dynamic memory allocation on the heap. Always free what you malloc.', example: 'int *arr = malloc(5 * sizeof(int));\narr[0] = 42;\nfree(arr);' },
+    ]},
+  ],
+  java: [
+    { title: 'Java Basics', concepts: [
+      { name: 'System.out.println()', desc: 'Print to console. Every Java program needs a main method in a class.', example: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello!");\n  }\n}' },
+      { name: 'Variables & Types', desc: 'Strongly typed: int, double, String, boolean. Primitives vs Objects.', example: 'int score = 100;\ndouble price = 9.99;\nString name = "Ada";\nboolean active = true;' },
+      { name: 'Control Flow', desc: 'if/else, for, while, switch. Same syntax as C/C++ family.', example: 'for (int i = 0; i < 5; i++) {\n  if (i % 2 == 0) {\n    System.out.println(i + " even");\n  }\n}' },
+    ]},
+    { title: 'OOP & Collections', concepts: [
+      { name: 'Classes & Objects', desc: 'Everything is in a class. Constructors, methods, access modifiers.', example: 'class Dog {\n  String name;\n  Dog(String n) { name = n; }\n  void bark() {\n    System.out.println(name + " barks!");\n  }\n}' },
+      { name: 'ArrayList', desc: 'Dynamic array from java.util. Generics for type safety.', example: 'ArrayList<String> names = new ArrayList<>();\nnames.add("Ada");\nnames.add("Bob");\nSystem.out.println(names.get(0));' },
+      { name: 'Interfaces', desc: 'Define contracts. Classes implement them. Multiple allowed.', example: 'interface Drawable {\n  void draw();\n}\nclass Circle implements Drawable {\n  public void draw() {\n    System.out.println("drawing circle");\n  }\n}' },
+    ]},
+  ],
+  cpp: [
+    { title: 'C++ Fundamentals', concepts: [
+      { name: 'cout / cin', desc: 'Output with cout <<, input with cin >>. Include <iostream>.', example: '#include <iostream>\nusing namespace std;\ncout << "Hello!" << endl;\nint x;\ncin >> x;' },
+      { name: 'Variables & Types', desc: 'Like C but with string, bool, auto. Strongly typed.', example: 'int score = 100;\ndouble pi = 3.14;\nstd::string name = "Ada";\nbool active = true;\nauto x = 42; // inferred' },
+      { name: 'References & Pointers', desc: '& = reference (alias), * = pointer (address). References are safer.', example: 'int x = 10;\nint& ref = x;  // reference\nint* ptr = &x; // pointer\nref = 20; // x is now 20' },
+    ]},
+    { title: 'Modern C++', concepts: [
+      { name: 'Vectors & Range For', desc: 'std::vector is a dynamic array. Range-for iterates easily.', example: 'std::vector<int> nums = {1, 2, 3};\nnums.push_back(4);\nfor (auto n : nums) {\n  cout << n << endl;\n}' },
+      { name: 'Classes', desc: 'Like C# classes. Constructors, destructors, access modifiers.', example: 'class Dog {\npublic:\n  string name;\n  Dog(string n) : name(n) {}\n  void bark() { cout << name << " barks!"; }\n};' },
+      { name: 'Smart Pointers & Templates', desc: 'unique_ptr/shared_ptr manage memory. Templates enable generics.', example: 'auto p = std::make_unique<int>(42);\ntemplate<typename T>\nT maximum(T a, T b) {\n  return (a > b) ? a : b;\n}' },
+    ]},
+  ],
+  typescript: [
+    { title: 'Type System Basics', concepts: [
+      { name: 'Type Annotations', desc: 'Add types after variable names with : type. Checked at compile time.', example: 'let name: string = "Ada";\nlet score: number = 100;\nlet active: boolean = true;\nlet items: string[] = ["a", "b"];' },
+      { name: 'Interfaces', desc: 'Define object shapes. Properties, optional (?), readonly.', example: 'interface User {\n  name: string;\n  age: number;\n  email?: string; // optional\n}' },
+      { name: 'Union & Literal Types', desc: '| for "either/or" types. Literal types restrict to exact values.', example: 'type ID = string | number;\ntype Status = "active" | "inactive";\nlet id: ID = "abc";\nlet s: Status = "active";' },
+    ]},
+    { title: 'Advanced Types', concepts: [
+      { name: 'Generics', desc: 'Type parameters for reusable, type-safe code.', example: 'function identity<T>(value: T): T {\n  return value;\n}\nidentity<string>("hello");\nidentity(42); // inferred' },
+      { name: 'Utility Types', desc: 'Built-in type transformers: Partial, Pick, Omit, Record.', example: 'type User = { name: string; age: number };\ntype Partial_User = Partial<User>;\ntype NameOnly = Pick<User, "name">;\ntype Scores = Record<string, number>;' },
+      { name: 'Type Guards', desc: 'Narrow types at runtime with typeof, instanceof, in, custom guards.', example: 'function process(value: string | number) {\n  if (typeof value === "string") {\n    console.log(value.toUpperCase());\n  } else {\n    console.log(value.toFixed(2));\n  }\n}' },
+    ]},
+  ],
+  react: [
+    { title: 'Components & JSX', concepts: [
+      { name: 'Function Components', desc: 'Components are functions returning JSX. Props pass data down.', example: 'function Greeting({ name }) {\n  return <h1>Hello, {name}!</h1>;\n}\n// <Greeting name="Ada" />' },
+      { name: 'JSX Expressions', desc: 'Use {} to embed JS expressions. Conditional rendering with ternary.', example: 'function Status({ online }) {\n  return (\n    <span>{online ? "Online" : "Offline"}</span>\n  );\n}' },
+      { name: 'Lists & Keys', desc: 'Use .map() to render lists. key prop helps React track items.', example: 'function TodoList({ items }) {\n  return (\n    <ul>\n      {items.map(item =>\n        <li key={item.id}>{item.text}</li>\n      )}\n    </ul>\n  );\n}' },
+    ]},
+    { title: 'Hooks & State', concepts: [
+      { name: 'useState', desc: 'Add state to function components. Returns [value, setter].', example: 'const [count, setCount] = useState(0);\nreturn (\n  <button onClick={() => setCount(count + 1)}>\n    Clicked {count} times\n  </button>\n);' },
+      { name: 'useEffect', desc: 'Run side effects after render. Cleanup on unmount.', example: 'useEffect(() => {\n  document.title = `Count: ${count}`;\n  return () => { /* cleanup */ };\n}, [count]); // runs when count changes' },
+      { name: 'Custom Hooks', desc: 'Extract reusable logic into use-prefixed functions.', example: 'function useToggle(initial = false) {\n  const [value, setValue] = useState(initial);\n  const toggle = () => setValue(v => !v);\n  return [value, toggle];\n}' },
+    ]},
+  ],
+  sql: [
+    { title: 'Queries & Filtering', concepts: [
+      { name: 'SELECT', desc: 'Retrieve data from tables. * for all columns, or list specific ones.', example: 'SELECT * FROM users;\nSELECT name, email FROM users;\nSELECT DISTINCT country FROM users;' },
+      { name: 'WHERE & Operators', desc: 'Filter rows with conditions. AND, OR, IN, LIKE, BETWEEN.', example: 'SELECT * FROM users WHERE age > 18;\nSELECT * FROM users\n  WHERE country IN ("US", "UK")\n  AND name LIKE "A%";' },
+      { name: 'ORDER BY & LIMIT', desc: 'Sort results and limit row count.', example: 'SELECT * FROM users\n  ORDER BY score DESC\n  LIMIT 10;' },
+    ]},
+    { title: 'Joins & Aggregation', concepts: [
+      { name: 'JOINs', desc: 'Combine related tables. INNER, LEFT, RIGHT, FULL.', example: 'SELECT u.name, o.total\nFROM users u\nINNER JOIN orders o\n  ON u.id = o.user_id;' },
+      { name: 'GROUP BY & Aggregates', desc: 'Group rows and compute: COUNT, SUM, AVG, MIN, MAX.', example: 'SELECT country, COUNT(*) as total\nFROM users\nGROUP BY country\nHAVING COUNT(*) > 5;' },
+      { name: 'INSERT / UPDATE / DELETE', desc: 'Modify data. Always use WHERE with UPDATE/DELETE!', example: 'INSERT INTO users (name, age)\n  VALUES ("Ada", 28);\nUPDATE users SET age = 29\n  WHERE name = "Ada";\nDELETE FROM users\n  WHERE name = "Ada";' },
+    ]},
+  ],
+  rust: [
+    { title: 'Rust Fundamentals', concepts: [
+      { name: 'Variables & Mutability', desc: 'Immutable by default. Use let mut for mutable. Strong typing.', example: 'let name = "Ada";        // immutable\nlet mut score = 0;       // mutable\nscore = 100;\nlet x: i32 = 42;        // explicit type' },
+      { name: 'Ownership & Borrowing', desc: 'Each value has one owner. & borrows without taking ownership.', example: 'let s1 = String::from("hello");\nlet s2 = &s1;  // borrow\nprintln!("{}", s2); // OK\nprintln!("{}", s1); // also OK' },
+      { name: 'Match & Enums', desc: 'match is exhaustive pattern matching. Enums can hold data.', example: 'enum Shape {\n  Circle(f64),\n  Rect(f64, f64),\n}\nmatch shape {\n  Shape::Circle(r) => println!("r={}", r),\n  Shape::Rect(w, h) => println!("{}x{}", w, h),\n}' },
+    ]},
+    { title: 'Traits & Error Handling', concepts: [
+      { name: 'Traits', desc: 'Define shared behavior (like interfaces). impl Trait for Type.', example: 'trait Greet {\n  fn hello(&self) -> String;\n}\nimpl Greet for Player {\n  fn hello(&self) -> String {\n    format!("Hi, {}", self.name)\n  }\n}' },
+      { name: 'Option & Result', desc: 'No null! Option<T> = Some/None. Result<T,E> = Ok/Err.', example: 'let val: Option<i32> = Some(42);\nmatch val {\n  Some(n) => println!("{}", n),\n  None => println!("nothing"),\n}\n// ? propagates errors\nlet content = std::fs::read_to_string("f.txt")?;' },
+      { name: 'Iterators & Closures', desc: 'Lazy iterators chain operations. Closures capture environment.', example: 'let nums = vec![1, 2, 3, 4, 5];\nlet evens: Vec<_> = nums.iter()\n  .filter(|&&n| n % 2 == 0)\n  .map(|&n| n * 10)\n  .collect();\n// [20, 40]' },
     ]},
   ],
 };
@@ -588,7 +693,7 @@ class SudoQuest {
         : "Type 'hint' if you need help (0/3 hints used).", 'dim');
 
       // Show multi-line tip for questions that might need it
-      if (level.type === 'js' || level.type === 'csharp') {
+      if (level.type !== 'git' && level.type !== 'cmd') {
         this.addLine("Shift+Enter for new line.", 'dim');
       }
       this.addLine('\u2500'.repeat(58), 'dim');
@@ -657,6 +762,14 @@ class SudoQuest {
         case 'html':
         case 'css':
         case 'csharp':
+        case 'python':
+        case 'c':
+        case 'java':
+        case 'cpp':
+        case 'typescript':
+        case 'react':
+        case 'sql':
+        case 'rust':
           await this.executeText(trimmed, level);
           break;
         default: // js
@@ -1014,6 +1127,7 @@ class SudoQuest {
     if (validation.passed) {
       this.onLevelPassed(level);
     } else if (!result.error) {
+      sound.playWrongAnswer();
       this.addLine(validation.feedback, 'dim');
     }
   }
@@ -1256,6 +1370,7 @@ class SudoQuest {
     if (validation.passed) {
       this.onLevelPassed(level);
     } else if (!result.error) {
+      sound.playWrongAnswer();
       this.addLine(validation.feedback, 'dim');
     }
   }
@@ -1527,6 +1642,7 @@ class SudoQuest {
     const id = level.id;
     this.attempts[id] = (this.attempts[id] || 0) + 1;
     this.saveProgress();
+    sound.playWrongAnswer();
     this.addLine(`\u2717 ${feedback}`, 'error');
     const hintsUsed = this.hintsRevealed[id] || 0;
     if (hintsUsed < 3) this.addLine(`Type 'hint' for help (${hintsUsed}/3 hints revealed).`, 'dim');
@@ -1799,6 +1915,22 @@ class SudoQuest {
         check: () => this.isCategoryDone('css') },
       { key: 'csharp_master', title: 'C# Champion', desc: 'Complete all C# levels', icon: '\uD83C\uDFC6',
         check: () => this.isCategoryDone('csharp') },
+      { key: 'python_master', title: 'Python Tamer', desc: 'Complete all Python levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('python') },
+      { key: 'c_master', title: 'C Veteran', desc: 'Complete all C levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('c') },
+      { key: 'cpp_master', title: 'C++ Architect', desc: 'Complete all C++ levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('cpp') },
+      { key: 'java_master', title: 'Java Juggernaut', desc: 'Complete all Java levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('java') },
+      { key: 'ts_master', title: 'TypeScript Titan', desc: 'Complete all TypeScript levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('typescript') },
+      { key: 'react_master', title: 'React Rockstar', desc: 'Complete all React levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('react') },
+      { key: 'sql_master', title: 'SQL Sage', desc: 'Complete all SQL levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('sql') },
+      { key: 'rust_master', title: 'Rust Ranger', desc: 'Complete all Rust levels', icon: '\uD83C\uDFC6',
+        check: () => this.isCategoryDone('rust') },
       { key: 'speed_demon', title: 'Speed Demon', desc: 'Complete a category under 10 min', icon: '\u26A1',
         check: () => Object.values(this.personalBests).some(t => t < 600000) },
       { key: 'no_hints', title: 'Solo Solver', desc: 'Complete a category without hints', icon: '\uD83E\uDDE0',
@@ -1807,8 +1939,8 @@ class SudoQuest {
         check: () => this.firstTryStreak >= 5 },
       { key: 'perfectionist', title: 'Perfectionist', desc: 'Score 100 on 10 levels', icon: '\uD83D\uDCAF',
         check: () => Object.values(this.score).filter(s => s === 100).length >= 10 },
-      { key: 'completionist', title: 'Completionist', desc: 'Complete all 210 levels', icon: '\uD83C\uDF1F',
-        check: () => this.completedLevels.size >= 210 },
+      { key: 'completionist', title: 'Completionist', desc: 'Complete all 490 levels', icon: '\uD83C\uDF1F',
+        check: () => this.completedLevels.size >= 490 },
     ];
 
     for (const def of defs) {
@@ -1847,11 +1979,19 @@ class SudoQuest {
       { key: 'html_master', title: 'HTML Hero', desc: 'Complete all HTML levels', icon: '\uD83C\uDFC6' },
       { key: 'css_master', title: 'CSS Wizard', desc: 'Complete all CSS levels', icon: '\uD83C\uDFC6' },
       { key: 'csharp_master', title: 'C# Champion', desc: 'Complete all C# levels', icon: '\uD83C\uDFC6' },
+      { key: 'python_master', title: 'Python Tamer', desc: 'Complete all Python levels', icon: '\uD83C\uDFC6' },
+      { key: 'c_master', title: 'C Veteran', desc: 'Complete all C levels', icon: '\uD83C\uDFC6' },
+      { key: 'cpp_master', title: 'C++ Architect', desc: 'Complete all C++ levels', icon: '\uD83C\uDFC6' },
+      { key: 'java_master', title: 'Java Juggernaut', desc: 'Complete all Java levels', icon: '\uD83C\uDFC6' },
+      { key: 'ts_master', title: 'TypeScript Titan', desc: 'Complete all TypeScript levels', icon: '\uD83C\uDFC6' },
+      { key: 'react_master', title: 'React Rockstar', desc: 'Complete all React levels', icon: '\uD83C\uDFC6' },
+      { key: 'sql_master', title: 'SQL Sage', desc: 'Complete all SQL levels', icon: '\uD83C\uDFC6' },
+      { key: 'rust_master', title: 'Rust Ranger', desc: 'Complete all Rust levels', icon: '\uD83C\uDFC6' },
       { key: 'speed_demon', title: 'Speed Demon', desc: 'Complete a category under 10 min', icon: '\u26A1' },
       { key: 'no_hints', title: 'Solo Solver', desc: 'Complete a category without hints', icon: '\uD83E\uDDE0' },
       { key: 'streak_5', title: 'On Fire!', desc: '5 levels in a row on first try', icon: '\uD83D\uDD25' },
       { key: 'perfectionist', title: 'Perfectionist', desc: 'Score 100 on 10 levels', icon: '\uD83D\uDCAF' },
-      { key: 'completionist', title: 'Completionist', desc: 'Complete all 210 levels', icon: '\uD83C\uDF1F' },
+      { key: 'completionist', title: 'Completionist', desc: 'Complete all 490 levels', icon: '\uD83C\uDF1F' },
     ];
     for (const d of allDefs) {
       const earned = this.achievements.has(d.key);
@@ -1906,7 +2046,7 @@ class SudoQuest {
     this.addBlank();
 
     const keys = Object.keys(SANDBOX_LESSONS);
-    const labels = { js: 'JavaScript', git: 'Git', cmd: 'Terminal', html: 'HTML', css: 'CSS', csharp: 'C#' };
+    const labels = { js: 'JavaScript', git: 'Git', cmd: 'Terminal', html: 'HTML', css: 'CSS', csharp: 'C#', python: 'Python', c: 'C', java: 'Java', cpp: 'C++', typescript: 'TypeScript', react: 'React', sql: 'SQL', rust: 'Rust' };
     keys.forEach(k => {
       const lessons = SANDBOX_LESSONS[k];
       const totalConcepts = lessons.reduce((n, l) => n + l.concepts.length, 0);
@@ -2003,7 +2143,7 @@ class SudoQuest {
     for (let i = 0; i < this.sandboxLessonIndex; i++) currentNum += lessons[i].concepts.length;
     currentNum += this.sandboxConceptIndex + 1;
 
-    const labels = { js: 'JavaScript', git: 'Git', cmd: 'Terminal', html: 'HTML', css: 'CSS', csharp: 'C#' };
+    const labels = { js: 'JavaScript', git: 'Git', cmd: 'Terminal', html: 'HTML', css: 'CSS', csharp: 'C#', python: 'Python', c: 'C', java: 'Java', cpp: 'C++', typescript: 'TypeScript', react: 'React', sql: 'SQL', rust: 'Rust' };
     const catName = labels[this.sandboxCategory] || this.sandboxCategory;
 
     this.addLine(`\u2550\u2550 ${catName} Sandbox \u2550\u2550  [${currentNum}/${totalConcepts}]`, 'system');
