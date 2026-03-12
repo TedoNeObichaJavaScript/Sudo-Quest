@@ -943,10 +943,12 @@ html, body {
   background: var(--bg-terminal);
   border-top: 1px solid var(--border);
   border-radius: 12px 12px 0 0;
-  padding: 8px 16px 24px;
+  padding: 8px 16px calc(24px + env(safe-area-inset-bottom, 0px));
   z-index: 100;
   transform: translateY(100%);
   transition: transform 0.25s ease;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .mobile-drawer.open {
@@ -1015,6 +1017,8 @@ html, body {
   padding: 20px 24px;
   max-width: 360px;
   width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
 .kb-title {
@@ -1146,21 +1150,54 @@ html, body {
 .hamburger,
 .drawer-btn {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ── Mobile Adjustments ──────────────────────────────────────── */
 
+@media (max-width: 767px) {
+  .app {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Hide score and progress bar on mobile to reduce header clutter */
+  .score-text {
+    display: none;
+  }
+
+  .progress-bar {
+    display: none;
+  }
+
+  .level-text {
+    font-size: 11px;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 @media (max-width: 480px) {
   .app {
     padding: 4px;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px));
   }
 
   .header {
-    padding: 6px 12px;
+    padding: 6px 10px;
+    gap: 8px;
+    flex-wrap: nowrap;
   }
 
   .logo {
     font-size: 15px;
+  }
+
+  .version {
+    display: none;
   }
 
   .terminal-output {
@@ -1182,7 +1219,13 @@ html, body {
 
   .footer {
     font-size: 10px;
-    gap: 8px;
+    gap: 6px;
+  }
+
+  /* Hide middle dot separators on very narrow screens */
+  .footer span:nth-child(2),
+  .footer span:nth-child(4) {
+    display: none;
   }
 }
 
@@ -1192,6 +1235,14 @@ html, body {
   }
 
   .completion-art {
+    font-size: 10px;
+  }
+
+  .header {
+    padding: 4px 8px;
+  }
+
+  .level-text {
     font-size: 10px;
   }
 }
@@ -1379,7 +1430,7 @@ html, body {
   left: 0;
   right: 0;
   text-align: center;
-  padding: 4px 8px;
+  padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px));
   font-size: 11px;
   color: var(--accent-dim, rgba(0,255,65,0.4));
   background: var(--bg, #0a0a0f);
@@ -1387,4 +1438,11 @@ html, body {
   z-index: 5;
   pointer-events: none;
   user-select: none;
+}
+
+/* Hide copyright footer on mobile — main footer already visible */
+@media (max-width: 767px) {
+  .copyright-footer {
+    display: none;
+  }
 }
