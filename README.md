@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=40&duration=3000&pause=1000&color=00FF41&center=true&vCenter=true&repeat=true&width=600&height=80&lines=%24+sudo+solve;%3E+Access+Granted+%E2%9C%93;%3E+Level+Up+%F0%9F%9A%80" alt="sudo solve animation" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=40&duration=3000&pause=1000&color=00FF41&center=true&vCenter=true&repeat=true&width=600&height=80&lines=%24+sudo+quest;%3E+Access+Granted+%E2%9C%93;%3E+Level+Up+%F0%9F%9A%80" alt="Sudo Quest animation" />
 </p>
 
 <p align="center">
@@ -21,9 +21,9 @@
 
 ---
 
-## What is sudo solve?
+## What is Sudo Quest?
 
-**sudo solve** is an interactive browser-based coding game that teaches programming through a terminal interface. Type real code, get instant feedback, and progress through 210 levels covering JavaScript, HTML, CSS, Git, Terminal commands, and C#.
+**Sudo Quest** is an interactive browser-based coding game that teaches programming through a terminal interface. Type real code, get instant feedback, and progress through 210 levels covering JavaScript, HTML, CSS, Git, Terminal commands, and C#.
 
 No accounts. No installs. No setup. Just open and start typing.
 
@@ -82,8 +82,8 @@ No accounts. No installs. No setup. Just open and start typing.
 
 ```bash
 # Clone the repository
-git clone https://github.com/TedoNeObichaJavaScript/SUDO-Solve.git
-cd SUDO-Solve
+git clone https://github.com/TedoNeObichaJavaScript/SUDO-Quest.git
+cd SUDO-Quest
 
 # Install dependencies
 npm install
@@ -99,7 +99,7 @@ Open [http://localhost:3000](http://localhost:3000) and start solving.
 ## Project Structure
 
 ```
-sudo-solve/
+sudo-quest/
 ├── public/
 │   ├── index.html                  # Single page app shell
 │   ├── css/
@@ -181,5 +181,5 @@ MIT — see [LICENSE](LICENSE) for details.
 ---
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=16&duration=4000&pause=2000&color=00FF41&center=true&vCenter=true&repeat=true&width=400&height=30&lines=%24+sudo+solve+--all;Happy+hacking!+%F0%9F%92%BB" alt="footer" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=16&duration=4000&pause=2000&color=00FF41&center=true&vCenter=true&repeat=true&width=400&height=30&lines=%24+sudo+quest+--all;Happy+hacking!+%F0%9F%92%BB" alt="footer" />
 </p>

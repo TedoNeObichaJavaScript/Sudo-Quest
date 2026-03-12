@@ -1,7 +1,7 @@
 {
   "name": "terminalquest",
   "version": "1.0.0",
-  "description": "sudo solve - A coding game for learning terminal and programming",
+  "description": "Sudo Quest - A coding game for learning terminal and programming",
   "main": "server/index.js",
   "type": "module",
   "scripts": {
@@ -22,12 +22,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/sudo-solve.git"
+    "url": "https://github.com/YOUR_USERNAME/sudo-quest.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/sudo-solve/issues"
+    "url": "https://github.com/YOUR_USERNAME/sudo-quest/issues"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/sudo-solve#readme",
+  "homepage": "https://github.com/YOUR_USERNAME/sudo-quest#readme",
   "dependencies": {
     "express": "^4.18.2"
   },
