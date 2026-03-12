@@ -130,6 +130,22 @@ const SANDBOX_LESSONS = {
       { name: 'Spread Operator', desc: '... spreads arrays/objects into new ones. Great for copies and merging.', example: 'let arr = [1, 2, 3];\nlet copy = [...arr, 4, 5];\nconsole.log(copy)' },
       { name: 'Ternary Operator', desc: 'Shorthand if/else: condition ? ifTrue : ifFalse', example: 'let age = 20;\nlet status = age >= 18 ? "adult" : "minor";\nconsole.log(status)' },
     ]},
+    { title: 'Error Handling & Async', concepts: [
+      { name: 'Try / Catch', desc: 'Handle errors gracefully instead of crashing. catch receives the error.', example: 'try {\n  let data = JSON.parse("bad json");\n} catch (err) {\n  console.log("Error:", err.message);\n}' },
+      { name: 'Promises', desc: 'Represent future values. .then() for success, .catch() for errors.', example: 'const wait = (ms) => new Promise(resolve =>\n  setTimeout(resolve, ms)\n);\nwait(1000).then(() => console.log("Done!"))' },
+      { name: 'Async / Await', desc: 'Cleaner syntax for Promises. async functions return Promises, await pauses execution.', example: 'async function fetchData() {\n  try {\n    const res = await fetch("/api/data");\n    const json = await res.json();\n    console.log(json);\n  } catch (err) {\n    console.log("Failed:", err.message);\n  }\n}' },
+    ]},
+    { title: 'String & Array Tricks', concepts: [
+      { name: 'String Methods', desc: 'slice, split, replace, trim, includes, startsWith, endsWith, repeat.', example: 'let s = "  Hello, World!  ";\nconsole.log(s.trim());         // "Hello, World!"\nconsole.log(s.trim().split(","));  // ["Hello", " World!"]\nconsole.log("ha".repeat(3));   // "hahaha"' },
+      { name: 'filter / find / reduce', desc: 'filter keeps matching items, find returns first match, reduce accumulates.', example: 'let nums = [1, 2, 3, 4, 5];\nlet evens = nums.filter(n => n % 2 === 0);\nconsole.log(evens);  // [2, 4]\nlet sum = nums.reduce((a, b) => a + b, 0);\nconsole.log(sum);    // 15' },
+      { name: 'Chaining Methods', desc: 'Array methods return arrays, so you can chain them together.', example: 'let result = [5, 3, 8, 1, 9]\n  .filter(n => n > 3)\n  .map(n => n * 2)\n  .sort((a, b) => a - b);\nconsole.log(result); // [10, 16, 18]' },
+    ]},
+    { title: 'DOM & Events', concepts: [
+      { name: 'Selecting Elements', desc: 'querySelector finds one element, querySelectorAll finds all matches.', example: 'const btn = document.querySelector("#myBtn");\nconst items = document.querySelectorAll(".item");\nconsole.log(btn, items.length)' },
+      { name: 'Event Listeners', desc: 'addEventListener attaches behavior to user actions like clicks and key presses.', example: 'const btn = document.querySelector("#myBtn");\nbtn.addEventListener("click", () => {\n  console.log("Button clicked!");\n})' },
+      { name: 'Modifying the DOM', desc: 'Change text, HTML, styles, classes, and attributes of elements.', example: 'const el = document.querySelector("#output");\nel.textContent = "Updated!";\nel.classList.add("active");\nel.style.color = "green"' },
+      { name: 'Creating Elements', desc: 'createElement + appendChild to dynamically add content to the page.', example: 'const li = document.createElement("li");\nli.textContent = "New item";\ndocument.querySelector("ul").appendChild(li)' },
+    ]},
   ],
   git: [
     { title: 'Getting Started', concepts: [
@@ -143,6 +159,18 @@ const SANDBOX_LESSONS = {
       { name: 'git checkout / switch', desc: 'Move between branches. Use -b (checkout) or -c (switch) to create and switch.', example: 'git checkout feature\n# or modern:\ngit switch feature\ngit switch -c new-branch' },
       { name: 'git merge', desc: 'Combine another branch into the current one.', example: 'git checkout main\ngit merge feature' },
       { name: 'git stash', desc: 'Temporarily save uncommitted changes. Pop them back later.', example: 'git stash\ngit stash pop\ngit stash list' },
+    ]},
+    { title: 'History & Inspection', concepts: [
+      { name: 'git log', desc: 'View commit history. --oneline for compact view, --graph for branch visualization.', example: 'git log\ngit log --oneline\ngit log --oneline --graph --all' },
+      { name: 'git diff', desc: 'See changes between working tree and staging, or between commits.', example: 'git diff              # unstaged changes\ngit diff --staged     # staged changes\ngit diff main feature  # between branches' },
+      { name: 'git status', desc: 'Show the state of working directory and staging area.', example: 'git status\ngit status -s  # short format' },
+      { name: 'git blame', desc: 'Show who changed each line of a file and when.', example: 'git blame index.html' },
+    ]},
+    { title: 'Undoing & Remote', concepts: [
+      { name: 'git restore', desc: 'Discard changes in working directory or unstage files.', example: 'git restore file.txt          # discard changes\ngit restore --staged file.txt  # unstage' },
+      { name: 'git revert', desc: 'Create a new commit that undoes a previous commit. Safer than reset.', example: 'git revert HEAD       # undo last commit\ngit revert abc1234    # undo specific commit' },
+      { name: 'git remote & push', desc: 'Connect to remote repos. push sends commits, pull fetches and merges.', example: 'git remote add origin https://github.com/user/repo.git\ngit push -u origin main\ngit pull origin main' },
+      { name: 'git clone', desc: 'Download a complete copy of a remote repository.', example: 'git clone https://github.com/user/repo.git\ngit clone https://github.com/user/repo.git my-folder' },
     ]},
   ],
   cmd: [
@@ -158,6 +186,18 @@ const SANDBOX_LESSONS = {
       { name: 'Environment Variables', desc: 'export sets, $VAR reads, env lists all variables.', example: 'export MY_VAR=hello\necho $MY_VAR\nenv' },
       { name: 'grep / sort / wc', desc: 'grep searches text, sort orders lines, wc counts lines/words/chars.', example: 'echo "apple\nbanana\napricot" | grep ap\necho "c\na\nb" | sort' },
     ]},
+    { title: 'Permissions & Processes', concepts: [
+      { name: 'chmod', desc: 'Change file permissions. u/g/o for user/group/other, r/w/x for read/write/execute.', example: 'chmod +x script.sh       # make executable\nchmod 755 script.sh      # rwx r-x r-x\nchmod 644 readme.txt     # rw- r-- r--' },
+      { name: 'ps / kill / top', desc: 'ps lists processes, kill stops them, top shows real-time resource usage.', example: 'ps aux               # all processes\nkill 1234             # terminate PID 1234\nkill -9 1234          # force kill\ntop                   # live monitor' },
+      { name: 'sudo', desc: 'Run commands as superuser (admin). Required for system-level changes.', example: 'sudo apt update\nsudo rm /etc/old-config\nsudo chmod 755 /usr/local/bin/tool' },
+      { name: 'which / whereis', desc: 'Find the location of a program on your system.', example: 'which python\nwhereis git\nwhich node' },
+    ]},
+    { title: 'Networking & Archives', concepts: [
+      { name: 'curl / wget', desc: 'Download files or make HTTP requests from the command line.', example: 'curl https://api.example.com/data\ncurl -o file.zip https://example.com/file.zip\nwget https://example.com/file.tar.gz' },
+      { name: 'tar / zip', desc: 'Archive and compress files. tar for tarballs, zip for zip archives.', example: 'tar -czf archive.tar.gz folder/\ntar -xzf archive.tar.gz\nzip -r archive.zip folder/\nunzip archive.zip' },
+      { name: 'ssh / scp', desc: 'ssh connects to remote servers, scp copies files between machines.', example: 'ssh user@server.com\nscp file.txt user@server.com:/path/\nscp user@server.com:/remote/file.txt ./local/' },
+      { name: 'find / xargs', desc: 'find searches for files by name/type/size. xargs passes results as arguments.', example: 'find . -name "*.js"\nfind . -type f -size +1M\nfind . -name "*.log" | xargs rm' },
+    ]},
   ],
   html: [
     { title: 'Document Structure', concepts: [
@@ -169,6 +209,16 @@ const SANDBOX_LESSONS = {
       { name: 'Lists', desc: '<ul> for unordered, <ol> for ordered. Each item in <li>.', example: '<ul>\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>' },
       { name: 'Forms & Inputs', desc: '<form>, <input>, <button>, <textarea>, <select> build interactive forms.', example: '<form>\n  <input type="text" placeholder="Name">\n  <button type="submit">Send</button>\n</form>' },
       { name: 'Semantic Tags', desc: '<header>, <nav>, <main>, <section>, <article>, <footer> describe page structure.', example: '<header>\n  <nav><a href="/">Home</a></nav>\n</header>\n<main>\n  <article>Content here</article>\n</main>\n<footer>Copyright 2026</footer>' },
+    ]},
+    { title: 'Tables & Media', concepts: [
+      { name: 'Tables', desc: '<table>, <tr> for rows, <th> for headers, <td> for data cells.', example: '<table>\n  <tr><th>Name</th><th>Score</th></tr>\n  <tr><td>Ada</td><td>95</td></tr>\n  <tr><td>Bob</td><td>87</td></tr>\n</table>' },
+      { name: 'Audio & Video', desc: '<audio> and <video> embed media with playback controls.', example: '<audio controls>\n  <source src="song.mp3" type="audio/mpeg">\n</audio>\n<video controls width="400">\n  <source src="clip.mp4" type="video/mp4">\n</video>' },
+      { name: 'Iframes', desc: '<iframe> embeds another webpage inside your page.', example: '<iframe src="https://example.com"\n  width="600" height="400"\n  title="Embedded page">\n</iframe>' },
+    ]},
+    { title: 'Attributes & Accessibility', concepts: [
+      { name: 'Data Attributes', desc: 'Custom data-* attributes store extra info on elements for JS access.', example: '<button data-action="save" data-id="42">\n  Save\n</button>\n<!-- JS: el.dataset.action === "save" -->' },
+      { name: 'ARIA & Accessibility', desc: 'aria-label, role, alt text make pages usable for screen readers.', example: '<button aria-label="Close dialog">X</button>\n<img src="chart.png" alt="Sales chart for Q1">\n<nav role="navigation">\n  <a href="/">Home</a>\n</nav>' },
+      { name: 'Meta Tags', desc: '<meta> tags in <head> control viewport, charset, SEO, and social sharing.', example: '<meta charset="UTF-8">\n<meta name="viewport"\n  content="width=device-width, initial-scale=1.0">\n<meta name="description"\n  content="My awesome website">' },
     ]},
   ],
   css: [
@@ -182,6 +232,17 @@ const SANDBOX_LESSONS = {
       { name: 'Grid', desc: 'display: grid for 2D layouts. Define columns and rows.', example: '.grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n  gap: 16px;\n}' },
       { name: 'Positioning', desc: 'static (default), relative, absolute, fixed, sticky. Control element placement.', example: '.modal {\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 100;\n}' },
     ]},
+    { title: 'Animations & Transitions', concepts: [
+      { name: 'Transitions', desc: 'Smoothly animate property changes over time.', example: '.btn {\n  background: #333;\n  transition: background 0.3s ease,\n             transform 0.2s ease;\n}\n.btn:hover {\n  background: #0af;\n  transform: scale(1.05);\n}' },
+      { name: '@keyframes', desc: 'Define multi-step animations with keyframes and animation property.', example: '@keyframes fadeIn {\n  from { opacity: 0; transform: translateY(10px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n.card {\n  animation: fadeIn 0.5s ease;\n}' },
+      { name: 'Transforms', desc: 'Move, rotate, scale, skew elements without affecting layout.', example: '.icon {\n  transform: rotate(45deg);\n}\n.card:hover {\n  transform: scale(1.1) translateY(-4px);\n}' },
+    ]},
+    { title: 'Responsive & Variables', concepts: [
+      { name: 'Media Queries', desc: 'Apply styles based on screen size, orientation, or preferences.', example: '@media (max-width: 768px) {\n  .sidebar { display: none; }\n  .main { width: 100%; }\n}\n@media (prefers-color-scheme: dark) {\n  body { background: #111; }\n}' },
+      { name: 'CSS Variables', desc: 'Define reusable values with --name. Access with var(--name).', example: ':root {\n  --primary: #0af;\n  --gap: 16px;\n}\n.card {\n  color: var(--primary);\n  padding: var(--gap);\n}' },
+      { name: 'Responsive Units', desc: 'Use rem, em, vw, vh, % for flexible sizing. rem = relative to root font-size.', example: '.container {\n  width: 90vw;\n  max-width: 1200px;\n  font-size: 1rem;\n  padding: 2em;\n  height: 100vh;\n}' },
+      { name: 'Pseudo-classes & Pseudo-elements', desc: ':hover, :focus, :nth-child for states. ::before, ::after for generated content.', example: 'a:hover { color: #0af; }\nli:nth-child(odd) { background: #f5f5f5; }\n.quote::before {\n  content: "\\201C";\n  font-size: 2em;\n}' },
+    ]},
   ],
   csharp: [
     { title: 'C# Basics', concepts: [
@@ -194,6 +255,16 @@ const SANDBOX_LESSONS = {
       { name: 'Loops', desc: 'for, while, foreach. foreach is great for collections.', example: 'for (int i = 0; i < 5; i++) {\n  Console.WriteLine(i);\n}\nstring[] names = {"Ada", "Bob"};\nforeach (var n in names) {\n  Console.WriteLine(n);\n}' },
       { name: 'Classes', desc: 'Blueprints for objects. Properties store data, methods define behavior.', example: 'class Dog {\n  public string Name { get; set; }\n  public void Bark() {\n    Console.WriteLine(Name + " barks!");\n  }\n}' },
     ]},
+    { title: 'OOP & Interfaces', concepts: [
+      { name: 'Inheritance', desc: 'A class can inherit from a parent class. Use : to extend.', example: 'class Animal {\n  public string Name { get; set; }\n  public virtual void Speak() {\n    Console.WriteLine("...");\n  }\n}\nclass Dog : Animal {\n  public override void Speak() {\n    Console.WriteLine(Name + " barks!");\n  }\n}' },
+      { name: 'Interfaces', desc: 'Define contracts that classes must implement. Use "interface" keyword.', example: 'interface IMovable {\n  void Move(int x, int y);\n}\nclass Player : IMovable {\n  public void Move(int x, int y) {\n    Console.WriteLine($"Moving to ({x},{y})");\n  }\n}' },
+      { name: 'Properties & Access', desc: 'public, private, protected control visibility. Properties wrap fields.', example: 'class User {\n  private string _name;\n  public string Name {\n    get { return _name; }\n    set { _name = value.Trim(); }\n  }\n  public int Age { get; private set; }\n}' },
+    ]},
+    { title: 'LINQ & Error Handling', concepts: [
+      { name: 'LINQ Basics', desc: 'Query collections with SQL-like syntax. Where, Select, OrderBy.', example: 'int[] nums = {1, 2, 3, 4, 5};\nvar evens = nums.Where(n => n % 2 == 0);\nvar doubled = nums.Select(n => n * 2);\nvar sorted = nums.OrderByDescending(n => n);' },
+      { name: 'Try / Catch / Finally', desc: 'Handle exceptions gracefully. Finally always runs.', example: 'try {\n  int result = 10 / 0;\n} catch (DivideByZeroException ex) {\n  Console.WriteLine("Error: " + ex.Message);\n} finally {\n  Console.WriteLine("Cleanup done");\n}' },
+      { name: 'Generics', desc: 'Write type-safe code that works with any data type.', example: 'List<string> names = new List<string>();\nnames.Add("Ada");\nnames.Add("Bob");\nDictionary<string, int> scores = new();\nscores["Ada"] = 95;' },
+    ]},
   ],
   python: [
     { title: 'Python Basics', concepts: [
@@ -205,6 +276,11 @@ const SANDBOX_LESSONS = {
       { name: 'Lists', desc: 'Ordered, mutable collections. append(), pop(), slicing.', example: 'fruits = ["apple", "banana"]\nfruits.append("cherry")\nprint(fruits[0])  # apple\nprint(fruits[:2]) # first two' },
       { name: 'Dicts', desc: 'Key-value stores with fast lookup.', example: 'user = {"name": "Ada", "age": 28}\nprint(user["name"])\nuser["role"] = "dev"' },
       { name: 'If / For / While', desc: 'Control flow uses indentation, not braces. Colon required.', example: 'for i in range(5):\n    if i % 2 == 0:\n        print(f"{i} is even")\n    else:\n        print(f"{i} is odd")' },
+    ]},
+    { title: 'Functions & Modules', concepts: [
+      { name: 'Functions', desc: 'def keyword defines functions. Return values with return.', example: 'def greet(name):\n    return f"Hello, {name}!"\n\nprint(greet("Ada"))' },
+      { name: 'List Comprehensions', desc: 'Create lists in one line with [expr for item in iterable if condition].', example: 'squares = [x**2 for x in range(10)]\nevens = [x for x in range(20) if x % 2 == 0]\nprint(squares)\nprint(evens)' },
+      { name: 'Importing Modules', desc: 'import brings in libraries. from...import for specific items.', example: 'import math\nprint(math.sqrt(16))\nfrom random import randint\nprint(randint(1, 100))' },
     ]},
   ],
   c: [
@@ -229,6 +305,11 @@ const SANDBOX_LESSONS = {
       { name: 'Classes & Objects', desc: 'Everything is in a class. Constructors, methods, access modifiers.', example: 'class Dog {\n  String name;\n  Dog(String n) { name = n; }\n  void bark() {\n    System.out.println(name + " barks!");\n  }\n}' },
       { name: 'ArrayList', desc: 'Dynamic array from java.util. Generics for type safety.', example: 'ArrayList<String> names = new ArrayList<>();\nnames.add("Ada");\nnames.add("Bob");\nSystem.out.println(names.get(0));' },
       { name: 'Interfaces', desc: 'Define contracts. Classes implement them. Multiple allowed.', example: 'interface Drawable {\n  void draw();\n}\nclass Circle implements Drawable {\n  public void draw() {\n    System.out.println("drawing circle");\n  }\n}' },
+    ]},
+    { title: 'Exceptions & Streams', concepts: [
+      { name: 'Try / Catch', desc: 'Handle checked and unchecked exceptions. throws declares exceptions.', example: 'try {\n  int result = 10 / 0;\n} catch (ArithmeticException e) {\n  System.out.println("Error: " + e.getMessage());\n} finally {\n  System.out.println("Done");\n}' },
+      { name: 'Streams API', desc: 'Process collections functionally with filter, map, reduce.', example: 'List<Integer> nums = List.of(1, 2, 3, 4, 5);\nint sum = nums.stream()\n  .filter(n -> n % 2 == 0)\n  .mapToInt(n -> n * 2)\n  .sum();\n// sum = 12' },
+      { name: 'HashMap', desc: 'Key-value pairs with fast O(1) lookup. Part of java.util.', example: 'HashMap<String, Integer> scores = new HashMap<>();\nscores.put("Ada", 95);\nscores.put("Bob", 87);\nSystem.out.println(scores.get("Ada")); // 95' },
     ]},
   ],
   cpp: [
@@ -289,6 +370,30 @@ const SANDBOX_LESSONS = {
       { name: 'Traits', desc: 'Define shared behavior (like interfaces). impl Trait for Type.', example: 'trait Greet {\n  fn hello(&self) -> String;\n}\nimpl Greet for Player {\n  fn hello(&self) -> String {\n    format!("Hi, {}", self.name)\n  }\n}' },
       { name: 'Option & Result', desc: 'No null! Option<T> = Some/None. Result<T,E> = Ok/Err.', example: 'let val: Option<i32> = Some(42);\nmatch val {\n  Some(n) => println!("{}", n),\n  None => println!("nothing"),\n}\n// ? propagates errors\nlet content = std::fs::read_to_string("f.txt")?;' },
       { name: 'Iterators & Closures', desc: 'Lazy iterators chain operations. Closures capture environment.', example: 'let nums = vec![1, 2, 3, 4, 5];\nlet evens: Vec<_> = nums.iter()\n  .filter(|&&n| n % 2 == 0)\n  .map(|&n| n * 10)\n  .collect();\n// [20, 40]' },
+    ]},
+  ],
+  go: [
+    { title: 'Go Fundamentals', concepts: [
+      { name: 'Hello World', desc: 'Go uses package main and func main(). fmt.Println for output.', example: 'package main\nimport "fmt"\nfunc main() {\n  fmt.Println("Hello, World!")\n}' },
+      { name: 'Variables & Types', desc: ':= for short declaration, var for explicit. Strongly typed.', example: 'name := "Ada"        // inferred\nvar score int = 100  // explicit\nconst PI = 3.14\nfmt.Println(name, score)' },
+      { name: 'Functions', desc: 'func keyword. Multiple return values are idiomatic in Go.', example: 'func divide(a, b float64) (float64, error) {\n  if b == 0 {\n    return 0, fmt.Errorf("division by zero")\n  }\n  return a / b, nil\n}' },
+    ]},
+    { title: 'Structs & Concurrency', concepts: [
+      { name: 'Structs', desc: 'Custom data types with named fields. Methods attach via receivers.', example: 'type User struct {\n  Name string\n  Age  int\n}\nfunc (u User) Greet() string {\n  return "Hi, " + u.Name\n}' },
+      { name: 'Slices & Maps', desc: 'Slices are dynamic arrays. Maps are key-value stores.', example: 'nums := []int{1, 2, 3}\nnums = append(nums, 4)\nscores := map[string]int{\n  "Ada": 95,\n  "Bob": 87,\n}' },
+      { name: 'Goroutines & Channels', desc: 'go starts concurrent functions. Channels communicate between goroutines.', example: 'ch := make(chan string)\ngo func() {\n  ch <- "hello"\n}()\nmsg := <-ch\nfmt.Println(msg)' },
+    ]},
+  ],
+  swift: [
+    { title: 'Swift Basics', concepts: [
+      { name: 'Variables & Constants', desc: 'var for mutable, let for immutable. Type inference or explicit typing.', example: 'let name = "Ada"           // constant\nvar score: Int = 100       // mutable\nvar pi: Double = 3.14\nprint(name, score)' },
+      { name: 'Optionals', desc: 'Values that might be nil. Use ? to declare, if let or ?? to unwrap safely.', example: 'var email: String? = nil\nemail = "ada@example.com"\nif let e = email {\n  print("Email: \\(e)")\n}\nlet safe = email ?? "none"' },
+      { name: 'Functions', desc: 'func keyword with labeled parameters. Return type after ->.', example: 'func greet(name: String, times: Int = 1) -> String {\n  return String(repeating: "Hello, \\(name)! ", count: times)\n}\nprint(greet(name: "Ada"))' },
+    ]},
+    { title: 'Collections & OOP', concepts: [
+      { name: 'Arrays & Dictionaries', desc: 'Type-safe collections. Arrays are ordered, dictionaries are key-value.', example: 'var fruits = ["apple", "banana"]\nfruits.append("cherry")\nvar scores: [String: Int] = [\n  "Ada": 95, "Bob": 87\n]\nprint(scores["Ada"] ?? 0)' },
+      { name: 'Structs & Classes', desc: 'Structs are value types (copied), classes are reference types (shared).', example: 'struct Point {\n  var x: Double\n  var y: Double\n}\nclass Player {\n  var name: String\n  init(name: String) { self.name = name }\n}' },
+      { name: 'Enums & Switch', desc: 'Enums can have associated values. Switch must be exhaustive.', example: 'enum Direction {\n  case north, south, east, west\n}\nlet dir = Direction.north\nswitch dir {\n  case .north: print("Going up")\n  default: print("Other")\n}' },
     ]},
   ],
 };
@@ -388,6 +493,13 @@ class SudoQuest {
     this.musicUrlInput = document.getElementById('music-url-input');
     this.musicLoadBtn = document.getElementById('music-load-btn');
     this.musicEmbedWrap = document.getElementById('music-embed-wrap');
+    this.musicVolumeRow = document.getElementById('music-volume-row');
+    this.musicVolumeSlider = document.getElementById('music-volume-slider');
+    this.musicVolumeValue = document.getElementById('music-volume-value');
+    this.musicVolumeIcon = document.getElementById('music-volume-icon');
+    this.musicPlayerType = null; // 'youtube' or 'spotify'
+    this.ytPlayer = null;       // YouTube iframe reference
+    this.musicVolume = 80;      // default volume
 
     if (!this.input || !this.output) {
       console.error('Required DOM elements not found');
@@ -532,6 +644,39 @@ class SudoQuest {
         e.stopPropagation();
       });
       this.musicUrlInput.addEventListener('input', (e) => e.stopPropagation());
+    }
+
+    // Volume slider
+    if (this.musicVolumeSlider) {
+      try {
+        const savedVol = localStorage.getItem('sudoquest_music_volume');
+        if (savedVol !== null) {
+          this.musicVolume = parseInt(savedVol, 10);
+          this.musicVolumeSlider.value = this.musicVolume;
+          if (this.musicVolumeValue) this.musicVolumeValue.textContent = this.musicVolume + '%';
+        }
+      } catch (_) {}
+      this.musicVolumeSlider.addEventListener('input', (e) => {
+        e.stopPropagation();
+        this.musicVolume = parseInt(e.target.value, 10);
+        if (this.musicVolumeValue) this.musicVolumeValue.textContent = this.musicVolume + '%';
+        this.applyMusicVolume();
+        try { localStorage.setItem('sudoquest_music_volume', String(this.musicVolume)); } catch (_) {}
+      });
+    }
+    if (this.musicVolumeIcon) {
+      this.musicVolumeIcon.addEventListener('click', () => {
+        if (this.musicVolume > 0) {
+          this._preMuteVolume = this.musicVolume;
+          this.musicVolume = 0;
+        } else {
+          this.musicVolume = this._preMuteVolume || 80;
+        }
+        if (this.musicVolumeSlider) this.musicVolumeSlider.value = this.musicVolume;
+        if (this.musicVolumeValue) this.musicVolumeValue.textContent = this.musicVolume + '%';
+        this.applyMusicVolume();
+        try { localStorage.setItem('sudoquest_music_volume', String(this.musicVolume)); } catch (_) {}
+      });
     }
   }
 
@@ -969,9 +1114,9 @@ class SudoQuest {
 
   showHelp() {
     this.addBlank();
-    this.addLine('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557', 'system');
-    this.addLine('\u2551          AVAILABLE COMMANDS          \u2551', 'system');
-    this.addLine('\u2560\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2563', 'system');
+    this.addLine('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557', 'system');
+    this.addLine('\u2551             AVAILABLE COMMANDS             \u2551', 'system');
+    this.addLine('\u2560\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2563', 'system');
     const cmds = [
       ['hint',         'Reveal next hint (-25 pts)'],
       ['explain',      'Concept deep-dive'],
@@ -1000,9 +1145,9 @@ class SudoQuest {
       ['help',         'Show this help'],
     ];
     cmds.forEach(([c, d]) => {
-      this.addLine(`\u2551  ${c.padEnd(12)}\u2014 ${d.padEnd(22)}\u2551`, 'system');
+      this.addLine(`\u2551  ${c.padEnd(14)}\u2014 ${d.padEnd(26)}\u2551`, 'system');
     });
-    this.addLine('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D', 'system');
+    this.addLine('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D', 'system');
     this.addLine('Shift+Enter for multi-line input.', 'dim');
     this.addBlank();
   }
@@ -2263,28 +2408,73 @@ class SudoQuest {
     const raw = this.musicUrlInput?.value.trim();
     if (!raw) return;
 
-    const embedUrl = this.parseSpotifyUrl(raw);
-    if (!embedUrl) {
-      this.musicEmbedWrap.innerHTML = '<p class="music-placeholder">Invalid URL. Paste a Spotify track, album, or playlist link.</p>';
+    const result = this.parseMusicUrl(raw);
+    if (!result) {
+      this.musicEmbedWrap.innerHTML = '<p class="music-placeholder">Invalid URL. Paste a Spotify or YouTube link.</p>';
       return;
     }
 
     try { localStorage.setItem('sudoquest_music_url', raw); } catch (_) {}
 
+    this.musicPlayerType = result.type;
     this.musicEmbedWrap.innerHTML = '';
     const iframe = document.createElement('iframe');
-    iframe.src = embedUrl;
-    iframe.allow = 'encrypted-media';
+    iframe.src = result.embedUrl;
+    iframe.allow = 'encrypted-media; autoplay';
     iframe.loading = 'lazy';
-    iframe.sandbox = 'allow-scripts allow-same-origin allow-popups';
+    iframe.setAttribute('allowfullscreen', '');
+
+    if (result.type === 'spotify') {
+      iframe.sandbox = 'allow-scripts allow-same-origin allow-popups';
+    } else if (result.type === 'youtube') {
+      iframe.id = 'yt-music-iframe';
+      iframe.sandbox = 'allow-scripts allow-same-origin allow-popups allow-presentation';
+    }
+
     this.musicEmbedWrap.appendChild(iframe);
+    this.ytPlayer = (result.type === 'youtube') ? iframe : null;
+
+    // Show volume row
+    if (this.musicVolumeRow) this.musicVolumeRow.hidden = false;
+
+    // Apply saved volume after a short delay for iframe to load
+    setTimeout(() => this.applyMusicVolume(), 1000);
   }
 
-  parseSpotifyUrl(url) {
-    // Match: open.spotify.com/(track|album|playlist|episode|show)/ID
-    const m = url.match(/open\.spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/);
-    if (m) return `https://open.spotify.com/embed/${m[1]}/${m[2]}?theme=0`;
+  parseMusicUrl(url) {
+    // Spotify: open.spotify.com/(track|album|playlist|episode|show)/ID
+    const sp = url.match(/open\.spotify\.com\/(track|album|playlist|episode|show)\/([a-zA-Z0-9]+)/);
+    if (sp) return { type: 'spotify', embedUrl: `https://open.spotify.com/embed/${sp[1]}/${sp[2]}?theme=0` };
+
+    // YouTube: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID, youtube.com/shorts/ID
+    let ytId = null;
+    const yt1 = url.match(/(?:youtube\.com\/watch\?.*v=|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/);
+    if (yt1) ytId = yt1[1];
+    if (!ytId) {
+      const yt2 = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+      if (yt2) ytId = yt2[1];
+    }
+    if (ytId) return { type: 'youtube', embedUrl: `https://www.youtube.com/embed/${ytId}?enablejsapi=1&autoplay=1&rel=0` };
+
+    // YouTube Music: music.youtube.com/watch?v=ID
+    const ytm = url.match(/music\.youtube\.com\/watch\?.*v=([a-zA-Z0-9_-]{11})/);
+    if (ytm) return { type: 'youtube', embedUrl: `https://www.youtube.com/embed/${ytm[1]}?enablejsapi=1&autoplay=1&rel=0` };
+
     return null;
+  }
+
+  applyMusicVolume() {
+    if (this.ytPlayer && this.musicPlayerType === 'youtube') {
+      // Use YouTube IFrame API postMessage to set volume
+      try {
+        this.ytPlayer.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: 'setVolume',
+          args: [this.musicVolume]
+        }), '*');
+      } catch (_) {}
+    }
+    // Spotify embeds don't support external volume control — user controls via the player
   }
 
   // ── Learning Sandbox ──────────────────────────────────────

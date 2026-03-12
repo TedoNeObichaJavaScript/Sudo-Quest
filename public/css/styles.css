@@ -114,6 +114,34 @@ html, body {
   }
 }
 
+@media (min-width: 1920px) {
+  .app {
+    max-width: 1600px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .app {
+    max-width: 2200px;
+    padding: 24px;
+  }
+
+  html, body {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 3840px) {
+  .app {
+    max-width: 3200px;
+    padding: 32px;
+  }
+
+  html, body {
+    font-size: 22px;
+  }
+}
+
 /* ── Main Content (Sidebar + Terminal) ───────────────────────── */
 
 .main-content {
@@ -550,6 +578,67 @@ html, body {
 .music-load-btn:hover {
   background: var(--accent);
   color: var(--bg-dark);
+}
+
+.music-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.music-volume-icon {
+  color: var(--accent-dim);
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
+
+.music-volume-icon:hover {
+  color: var(--accent);
+}
+
+.music-volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.music-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--accent-glow);
+}
+
+.music-volume-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--accent-glow);
+}
+
+.music-volume-value {
+  color: var(--dim);
+  font-family: var(--font);
+  font-size: 10px;
+  min-width: 28px;
+  text-align: right;
 }
 
 /* ── Terminal ────────────────────────────────────────────────── */
@@ -1103,5 +1192,180 @@ html, body {
 
   .completion-art {
     font-size: 10px;
+  }
+}
+
+/* ── 4K / High-Resolution Scaling ───────────────────────────── */
+
+@media (min-width: 2560px) {
+  .timer-sidebar {
+    width: 320px;
+  }
+
+  .action-toolbar {
+    width: 72px;
+  }
+
+  .music-panel {
+    width: 400px;
+  }
+
+  .header {
+    padding: 12px 24px;
+    gap: 16px;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .version {
+    font-size: 14px;
+  }
+
+  .level-text {
+    font-size: 15px;
+  }
+
+  .score-text {
+    font-size: 14px;
+  }
+
+  .category-badge {
+    font-size: 14px;
+    padding: 4px 14px;
+  }
+
+  .progress-bar {
+    width: 180px;
+    height: 8px;
+  }
+
+  .terminal-output .line {
+    font-size: 17px;
+  }
+
+  .line-question {
+    font-size: 19px;
+  }
+
+  .terminal-input-area textarea {
+    font-size: 17px;
+  }
+
+  .prompt {
+    font-size: 20px;
+  }
+
+  .run-btn {
+    padding: 8px 20px;
+    font-size: 15px;
+  }
+
+  .terminal-bar {
+    padding: 14px 20px;
+  }
+
+  .terminal-title {
+    font-size: 15px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+  }
+
+  .split-row {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .split-name {
+    font-size: 13px;
+  }
+
+  .split-time {
+    font-size: 13px;
+  }
+
+  .timer-clock {
+    font-size: 40px;
+  }
+
+  .timer-title {
+    font-size: 16px;
+  }
+
+  .toolbar-icon {
+    font-size: 20px;
+  }
+
+  .toolbar-label {
+    font-size: 10px;
+  }
+
+  .toolbar-btn {
+    padding: 10px 6px;
+  }
+
+  .ascii-art {
+    font-size: 28px;
+  }
+
+  .footer {
+    font-size: 14px;
+  }
+
+  .kb-card {
+    max-width: 480px;
+    padding: 28px 32px;
+  }
+
+  .kb-title {
+    font-size: 18px;
+  }
+
+  .kb-row {
+    font-size: 15px;
+  }
+
+  .kb-row kbd {
+    font-size: 14px;
+    min-width: 100px;
+  }
+
+  .kb-row span {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 3840px) {
+  .timer-sidebar {
+    width: 400px;
+  }
+
+  .action-toolbar {
+    width: 88px;
+  }
+
+  .music-panel {
+    width: 500px;
+  }
+
+  .terminal-output .line {
+    font-size: 20px;
+    line-height: 1.8;
+  }
+
+  .terminal-input-area textarea {
+    font-size: 20px;
+  }
+
+  .timer-clock {
+    font-size: 48px;
+  }
+
+  .ascii-art {
+    font-size: 34px;
   }
 }

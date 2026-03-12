@@ -92,10 +92,15 @@
           <button class="music-close-btn" id="music-close-btn" title="Close">&times;</button>
         </div>
         <div class="music-embed-wrap" id="music-embed-wrap">
-          <p class="music-placeholder">Paste a Spotify link below to start listening.</p>
+          <p class="music-placeholder">Paste a Spotify or YouTube link below to start listening.</p>
+        </div>
+        <div class="music-volume-row" id="music-volume-row" hidden>
+          <span class="music-volume-icon" id="music-volume-icon" title="Mute/Unmute">&#9835;</span>
+          <input type="range" id="music-volume-slider" class="music-volume-slider" min="0" max="100" value="80">
+          <span class="music-volume-value" id="music-volume-value">80%</span>
         </div>
         <div class="music-input-row">
-          <input type="text" id="music-url-input" class="music-url-input" placeholder="Spotify URL..." spellcheck="false" autocomplete="off">
+          <input type="text" id="music-url-input" class="music-url-input" placeholder="Spotify or YouTube URL..." spellcheck="false" autocomplete="off">
           <button id="music-load-btn" class="music-load-btn" title="Load">&#9654;</button>
         </div>
       </aside>
