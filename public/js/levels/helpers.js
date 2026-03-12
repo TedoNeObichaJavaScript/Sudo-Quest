@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
 //  Shared validation helpers for all level categories
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
 // ═══════════════════════════════════════════════════════════════
 
 const P = { passed: true };

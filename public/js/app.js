@@ -1,5 +1,7 @@
 // ═══════════════════════════════════════════════════════════════
 //  SUDO QUEST — Game Engine
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
+//  Unauthorized copying or distribution is strictly prohibited.
 // ═══════════════════════════════════════════════════════════════
 
 import { CATEGORIES, getCategoryByKey, getLevelsForCategory } from './levels.js';
@@ -467,7 +469,7 @@ class SudoQuest {
     this.reviewQueue = [];     // [{catKey, levelId, dueDate}]
 
     // Tab completion
-    this.tabCommands = ['hint','clear','reset','restart','levels','categories','skip','next','theme','help','explain','save','load','achievements','score','learn','sandbox','sound','timestop','stats','playground','streak','daily','review','projects'];
+    this.tabCommands = ['hint','clear','reset','restart','restore','levels','categories','skip','next','theme','help','explain','save','load','achievements','score','learn','sandbox','sound','timestop','stats','playground','streak','daily','review','projects'];
 
     // DOM elements
     this.output = document.getElementById('output');
@@ -512,6 +514,17 @@ class SudoQuest {
   // ── Initialization ──────────────────────────────────────────
 
   init() {
+    // Copyright notice
+    console.log(
+      '%c Sudo Quest %c © 2024-2026 TedoNeObichaJavaScript. All Rights Reserved. ',
+      'background:#00ff41;color:#0a0a0f;font-weight:bold;padding:4px 8px;border-radius:3px 0 0 3px;',
+      'background:#1a1a2e;color:#00ff41;padding:4px 8px;border-radius:0 3px 3px 0;'
+    );
+    console.log(
+      '%cThis software is proprietary. Unauthorized copying, modification, or distribution is strictly prohibited.',
+      'color:#ff4444;font-weight:bold;'
+    );
+
     this.loadTheme();
     this.loadProgress();
     this.recordLogin();
@@ -996,6 +1009,15 @@ class SudoQuest {
     const lower = trimmed.toLowerCase();
     if (this.playgroundMode) { this.handlePlaygroundInput(trimmed); return; }
     if (this.sandboxMode) { this.handleSandboxInput(trimmed); return; }
+    if (this.pendingRestart) {
+      this.pendingRestart = false;
+      if (lower === 'y' || lower === 'yes') {
+        this.restartGame();
+      } else {
+        this.addLine('Restart cancelled.', 'dim');
+      }
+      return;
+    }
     if (this.awaitingReady) {
       if (this.handleReadyInput(lower)) return;
       // Fall through to special commands
@@ -1067,7 +1089,7 @@ class SudoQuest {
       hint: () => this.revealHint(),
       clear: () => { this.clearTerminal(); this.loadLevel(this.currentLevelIndex, true); },
       reset: () => this.resetLevel(),
-      restart: () => this.restartGame(),
+      restart: () => this.confirmRestart(),
       levels: () => this.showLevels(),
       categories: () => { this.gameStarted = false; this.showTimerSidebar(false); this.showCategoryScreen(); },
       skip: () => this.skipLevel(),
@@ -1087,6 +1109,7 @@ class SudoQuest {
       daily: () => this.showDailyChallenge(),
       review: () => this.showReview(),
       projects: () => this.showProjects(),
+      restore: () => this.restoreBackup(),
     };
 
     const run = (fn) => {
@@ -1122,7 +1145,8 @@ class SudoQuest {
       ['explain',      'Concept deep-dive'],
       ['clear',        'Clear terminal'],
       ['reset',        'Reset current level'],
-      ['restart',      'Restart everything'],
+      ['restart',      'Restart everything (with confirmation)'],
+      ['restore',      'Restore progress from last backup'],
       ['levels',       'Show all levels'],
       ['categories',   'Pick a new category'],
       ['level N',      'Jump to level N'],
@@ -1236,7 +1260,24 @@ class SudoQuest {
     this.saveProgress();
   }
 
+  confirmRestart() {
+    const completed = this.completedLevels.size;
+    if (completed === 0) {
+      this.restartGame();
+      return;
+    }
+    this.addLine(`⚠ This will erase all progress (${completed} level${completed === 1 ? '' : 's'} completed).`, 'error');
+    this.addLine('Type "y" to confirm, anything else to cancel.', 'dim');
+    this.pendingRestart = true;
+  }
+
   restartGame() {
+    // Backup current progress before wiping
+    try {
+      const current = localStorage.getItem('sudoquest_progress');
+      if (current) localStorage.setItem('sudoquest_progress_backup', current);
+    } catch (_) {}
+
     // Stop timer
     if (this.timerInterval) clearInterval(this.timerInterval);
     this.timerRunning = false;
@@ -1267,6 +1308,33 @@ class SudoQuest {
     this.showTimerSidebar(false);
     this.saveProgress();
     this.showReadyScreen();
+  }
+
+  restoreBackup() {
+    try {
+      const backup = localStorage.getItem('sudoquest_progress_backup');
+      if (!backup) {
+        this.addLine('No backup found.', 'error');
+        return;
+      }
+      localStorage.setItem('sudoquest_progress', backup);
+      this.loadProgress();
+      if (this.gameStarted && this.currentCategory) {
+        this.levels = getLevelsForCategory(this.currentCategory);
+        if (this.currentLevelIndex < 0 || this.currentLevelIndex >= this.levels.length) {
+          this.currentLevelIndex = 0;
+        }
+        this.showTimerSidebar(true);
+        this.startTimer();
+        this.renderSplits();
+        this.loadLevel(this.currentLevelIndex);
+      } else {
+        this.showReadyScreen();
+      }
+      this.addLine(`Progress restored! (${this.completedLevels.size} levels)`, 'success');
+    } catch (_) {
+      this.addLine('Failed to restore backup.', 'error');
+    }
   }
 
   showLevels() {

@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+//  JavaScript levels
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
+// ═══════════════════════════════════════════════════════════════
 import { vOut, vOuts, vVar, vCode, hasOutput, outputEquals, hasVar, hasFunc, noErrors, codeHas, P, F } from './helpers.js';
 
 export const JS_LEVELS = [

@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+//  Git levels
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
+// ═══════════════════════════════════════════════════════════════
 import { P, F } from './helpers.js';
 
 const vGit = (check, errMsg) => (state) => check(state) ? P : F(errMsg);

@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+//  Terminal (CMD) levels
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
+// ═══════════════════════════════════════════════════════════════
 import { P, F } from './helpers.js';
 
 // CMD validation: checks cmdState after command execution

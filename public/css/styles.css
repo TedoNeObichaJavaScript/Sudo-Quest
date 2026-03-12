@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    SUDO QUEST — Terminal Theme
    Pure CSS, no framework dependencies
+   Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── Variables ───────────────────────────────────────────────── */
@@ -1368,4 +1369,22 @@ html, body {
   .ascii-art {
     font-size: 34px;
   }
+}
+
+/* ── Copyright Footer ────────────────────────────────────────── */
+
+.copyright-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 4px 8px;
+  font-size: 11px;
+  color: var(--accent-dim, rgba(0,255,65,0.4));
+  background: var(--bg, #0a0a0f);
+  border-top: 1px solid var(--border, rgba(0,255,65,0.1));
+  z-index: 5;
+  pointer-events: none;
+  user-select: none;
 }

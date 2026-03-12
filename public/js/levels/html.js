@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+//  HTML levels
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
+// ═══════════════════════════════════════════════════════════════
 import { vHas } from './helpers.js';
 
 export const HTML_LEVELS = [

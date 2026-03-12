@@ -1,21 +1,24 @@
-MIT License
+Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
 
-Copyright (c) 2024 TedoNeObichaJavaScript
+PROPRIETARY SOFTWARE — NO LICENSE GRANTED
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software and its source code, including all files in this repository,
+are the exclusive intellectual property of TedoNeObichaJavaScript.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+NO PERMISSION is granted to any person or entity to:
+  - Copy, reproduce, or duplicate this software or any portion thereof
+  - Modify, adapt, or create derivative works based on this software
+  - Distribute, publish, sublicense, sell, or otherwise transfer this software
+  - Reverse-engineer, decompile, or disassemble this software
+  - Use this software for commercial or non-commercial purposes without
+    explicit written permission from the copyright holder
+
+Any unauthorized use, reproduction, or distribution of this software
+constitutes a violation of copyright law and may result in legal action.
+
+For licensing inquiries, contact the copyright holder via GitHub:
+https://github.com/TedoNeObichaJavaScript
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,
+DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.

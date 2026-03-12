@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════
 //  SUDO QUEST — Level Orchestrator
 //  Imports all categories and exports unified level system
+//  Copyright (c) 2024-2026 TedoNeObichaJavaScript. All Rights Reserved.
 // ═══════════════════════════════════════════════════════════════
 
 import { JS_LEVELS } from './levels/js.js';
