@@ -1201,7 +1201,12 @@ html, body {
   }
 
   .terminal-output {
-    padding: 12px;
+    padding: 10px;
+  }
+
+  .terminal-output .line {
+    font-size: 11px;
+    line-height: 1.6;
   }
 
   .terminal-input-area {
@@ -1244,6 +1249,15 @@ html, body {
 
   .level-text {
     font-size: 10px;
+  }
+
+  .terminal-output .line {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .terminal-output {
+    padding: 8px;
   }
 }
 

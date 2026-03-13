@@ -2623,7 +2623,7 @@ class SudoQuest {
         this.sandboxLessonIndex = 0;
         this.sandboxConceptIndex = 0;
         this.showSandboxConcept();
-      } else {
+      } else if (!this.handleSpecialCommand(lower)) {
         this.addLine(`Unknown topic "${lower}". Choose: ${Object.keys(SANDBOX_LESSONS).join(', ')}`, 'error');
       }
       return;
@@ -2647,6 +2647,9 @@ class SudoQuest {
       this.showSandboxLessonList();
       return;
     }
+
+    // Allow special commands (theme, help, sound, etc.) inside sandbox lessons
+    if (this.handleSpecialCommand(lower)) return;
 
     // Try running code in the sandbox (JS only)
     if (this.sandboxCategory === 'js') {
@@ -3110,6 +3113,9 @@ class SudoQuest {
       this.addBlank();
       return;
     }
+
+    // Allow special commands (theme, help, sound, etc.) inside playground
+    if (this.handleSpecialCommand(lower)) return;
 
     this.isExecuting = true;
     this.runBtn.textContent = '...';
